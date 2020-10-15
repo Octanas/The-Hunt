@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!jade.jar
 *.war
 *.nar
 *.ear
