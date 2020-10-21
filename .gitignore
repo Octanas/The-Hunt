@@ -95,3 +95,7 @@ local.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse
 /target/
+
+# JADE Temp Files
+APDescription.txt
+MTPs-Main-Container.txt
