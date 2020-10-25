@@ -202,7 +202,53 @@ public class Maze {
 		return true;
 	}
 	
-	// TODO: implement sight method
+	/**
+	 * Returns the entity visible to the specified entity.
+	 * If there are two entities in a row, only the closest entity is returned.
+	 * @param name	Name of the seeing entity.
+	 * @return		The entity that is being seen or null if no entity is being seen.
+	 */
+	public MazeEntity getVisibleEntity(String name) {
+		MazeEntity entity = entities.get(name);
+		
+		if(entity == null)
+			return null;
+		
+		int diffX = 0;
+		int diffY = 0;
+		
+		if(entity.direction.equals(Direction.North)) {
+			diffY = -1;
+		} else if(entity.direction.equals(Direction.South)) {
+			diffY = 1;
+		} else if(entity.direction.equals(Direction.West)) {
+			diffX = -1;
+		} else if(entity.direction.equals(Direction.East)) {
+			diffX = 1;
+		}
+		
+		int x = entity.xCoordinate;
+		int y = entity.yCoordinate;
+		boolean stop = false;
+		
+		MazeEntity entityFound = null;
+		
+		while(!stop) {
+			x += diffX;
+			y += diffY;
+			
+			for(String entityKey : entities.keySet()) {
+				if(entities.get(entityKey).xCoordinate == x && entities.get(entityKey).yCoordinate == y) {
+					entityFound = entities.get(entityKey);
+					break;
+				}
+			}
+			
+			stop = !this.maze[y][x].equals(Tile.C) || entityFound != null;
+		}
+		
+		return entityFound;
+	}
 	
 	/**
 	 * Gets a random coordinate with the specified tile.
