@@ -1,6 +1,7 @@
 package Environment;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class Maze {
 	private enum Direction { North, South, East, West };
@@ -11,18 +12,20 @@ public class Maze {
 		H	// HUNTER ZONE
 	};
 	
-	// TODO: should the Maze class know who is the hunter and who is the beast?
 	private class MazeEntity {
 		Direction direction;
 		int xCoordinate;
 		int yCoordinate;
+		boolean isHunter;
 		
-		public MazeEntity(int xCoordinate, int yCoordinate, Direction direction) {
+		public MazeEntity(boolean isHunter, int xCoordinate, int yCoordinate, Direction direction) {
+			this.isHunter = isHunter;
 			this.xCoordinate = xCoordinate;
 			this.yCoordinate = yCoordinate;
 			this.direction = direction;
 		}
 	}
+
 	
 	private static Tile[][] defaultMaze = new Tile[][] {
 		{Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W},
@@ -49,7 +52,10 @@ public class Maze {
 		{Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W, Tile.W}
 	};
 	
+	private int mazeWidth;
+	private int mazeHeight;
 	private Tile[][] maze;
+	private HashMap<Tile, Integer> numTiles;
 	private HashMap<String, MazeEntity> entities;
 	
 	/**
@@ -63,7 +69,43 @@ public class Maze {
 	private Maze(Tile[][] maze) {
 		this.maze = maze;
 		
+		this.mazeHeight = maze.length;
+		this.mazeWidth = maze.length != 0 ? maze[0].length : 0;
+		
 		entities = new HashMap<String, MazeEntity>();
+		numTiles = new HashMap<Tile, Integer>();
+		
+		for(int y = 0; y < this.mazeHeight; y++) {
+			for(int x = 0; x < this.mazeWidth; x++) {
+				int currValue = numTiles.getOrDefault(this.maze[y][x], 0);
+				numTiles.put(this.maze[y][x], currValue + 1);
+			}
+		}
+	}
+	
+	/**
+	 * Adds an entity to the maze in a random location.
+	 * 
+	 * If it fails, then there's already a entity with the chosen name or it couldn't calculate a location.
+	 * @param name		Name of the entity.
+	 * @param isHunter	If the entity is a hunter (false if is a beast).
+	 * @return			If the entity was added.
+	 */
+	public boolean registerEntity(String name, boolean isHunter) {
+		if(entities.containsKey(name))
+			return false;
+		
+		int[] coordinates;
+		
+		if(isHunter)
+			coordinates = getRandomCoordinate(Tile.H);
+		else
+			coordinates = getRandomCoordinate(Tile.C);
+		
+		if(coordinates == null)
+			return false;
+		
+		return registerEntity(name, isHunter, coordinates[0], coordinates[1]);
 	}
 	
 	/**
@@ -71,15 +113,16 @@ public class Maze {
 	 * 
 	 * If it fails, then there's already a entity with the chosen name.
 	 * @param name			Name of the entity.
+	 * @param isHunter		If the entity is a hunter (false if is a beast).			
 	 * @param xCoordinate	Initial X coordinate.
 	 * @param yCoordinate	Initial Y coordinate.
 	 * @return				If the entity was added.
 	 */
-	public boolean registerEntity(String name, int xCoordinate, int yCoordinate) {
+	public boolean registerEntity(String name, boolean isHunter, int xCoordinate, int yCoordinate) {
 		if(entities.containsKey(name))
 			return false;
 		
-		entities.put(name, new MazeEntity(xCoordinate, yCoordinate, Direction.North));
+		entities.put(name, new MazeEntity(isHunter, xCoordinate, yCoordinate, Direction.North));
 		
 		return true;
 	}
@@ -161,18 +204,67 @@ public class Maze {
 	
 	// TODO: implement sight method
 	
-	// TODO: represent entities in the toString() output
+	/**
+	 * Gets a random coordinate with the specified tile.
+	 * @param tile	Tile in the coordinates.
+	 * @return		Array with the coordinates [x, y] or null if it can't find a location.
+	 */
+	private int[] getRandomCoordinate(Tile tile) {
+		Random rand = new Random();
+		int tileNumber = rand.nextInt(this.mazeHeight * this.mazeWidth);
+		
+		int numTile = this.numTiles.getOrDefault(tile, 0);
+		
+		if(numTile == 0)
+			return null;
+		else {
+			tileNumber = tileNumber % numTile;
+		}
+		
+		int numFound = 0;
+		
+		for(int y = 0; y < this.mazeHeight; y++) {
+			for(int x = 0; x < this.mazeWidth; x++) {
+				if(this.maze[y][x].equals(tile)) {
+					if(numFound == tileNumber)
+						return new int[] { x, y };
+					
+					numFound++;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the maze representation in a String object.
+	 */
 	public String toString() {
 		String str = "";
 		
-		for(int i = 0; i < maze.length; i++) {
-			for (int j = 0; j < maze[i].length; j++) {
-				if(maze[i][j].equals(Tile.C))
-					str += "C ";
-				else if(maze[i][j].equals(Tile.W))
-					str += "W ";
-				else
-					str += "H ";
+		for(int y = 0; y < maze.length; y++) {
+			for (int x = 0; x < maze[y].length; x++) {
+				boolean foundEntity = false;
+				
+				for(String entityKey : entities.keySet()) {
+					if(entities.get(entityKey).xCoordinate == x && entities.get(entityKey).yCoordinate == y) {
+						str += "E ";
+						
+						foundEntity = true;
+						
+						break;
+					}
+				}
+				
+				if(!foundEntity) {
+					if(maze[y][x].equals(Tile.C))
+						str += "C ";
+					else if(maze[y][x].equals(Tile.W))
+						str += "W ";
+					else
+						str += "H ";
+				}
 			}
 			
 			str += "\n";
