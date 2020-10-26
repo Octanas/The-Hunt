@@ -1,7 +1,13 @@
 package Agents;
 
+import Behaviours.ListenerBehaviour;
+import Behaviours.PatrolBehaviour;
 import jade.core.*;
-import jade.core.behaviours.*;
+import jade.core.behaviours.Behaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class Predator extends Agent {
 	
@@ -9,40 +15,37 @@ public class Predator extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	Behaviour defaultBehaviour = new PatrolBehaviour(this, 1000);
 
 	protected void setup() {
-		System.out.println("I'm ready to hunt");
-		addBehaviour(new Behaviour(this));
+		
+		// Registration with the DF
+		DFAgentDescription agentDescription = new DFAgentDescription();
+		ServiceDescription serviceDescription = new ServiceDescription();
+
+		serviceDescription.setType("PredatorAgent"); // required
+		serviceDescription.setName(getName()); // required
+
+		agentDescription.setName(getAID()); // required
+		agentDescription.addServices(serviceDescription); // required
+		
+		try {
+			DFService.register(this, agentDescription);
+		} catch (FIPAException e) {
+			e.printStackTrace();
+		}
+		
+		
+		// Adding initial behaviours
+		addBehaviour(defaultBehaviour);
+		addBehaviour(new ListenerBehaviour(this, 1000));
 	}
 	
-	class Behaviour extends SimpleBehaviour {
+	public void removeDefaultBehaviour(){
 		
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private boolean finished = false;
-
-        public Behaviour(Agent agent) {
-            super(agent);
-        }
-        
-        public void onStart() {
-        	System.out.println("Started hunting");
-        }
-
-        @Override
-        public void action() {
-            System.out.println("I'm hunting");
-            finished = true;
-        }
-
-		@Override
-		public boolean done() {
-			return finished;
-		}
-        
-
-    }
+		this.removeBehaviour(defaultBehaviour);
+		
+	}
 
 }

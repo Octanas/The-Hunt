@@ -9,33 +9,62 @@ import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
 public class Hunt {
+	
+	//JADE profile and runtime variables
+    static Runtime runt;
+    static Profile profile;
 
 	public static void main(String[] args) {
 		
 		//Start JADE
-        Runtime runt = Runtime.instance();
-        Profile profile = new ProfileImpl();
+        runt = Runtime.instance();
+        profile = new ProfileImpl();
         profile.setParameter(Profile.GUI, "true");
 
         //Add agents
         AgentContainer mainContainer = runt.createMainContainer(profile);
-        try {
-            AgentController predatorController = mainContainer.createNewAgent("Predator1", "Agents.Predator", null);
-            AgentController preyController = mainContainer.createNewAgent("Prey1", "Agents.Prey", null);
-            mainContainer.start();
-            predatorController.start();
-            preyController.start();
-        } catch (StaleProxyException e) {
-            System.err.println("\nThere was an error creating the agent!");
-            e.printStackTrace();
-        } catch (ControllerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        System.out.println("Agent created...");
+        
+        addPredators(mainContainer, 4);
+        addPreys(mainContainer, 1);
+        
+        System.out.println("Agents created...");
 
         System.out.println("Container Running....");
 	    
 	}
+	
+	public static void addPredators(AgentContainer container, int n) {
+					
+		for(int i = 0; i < n; i++) {
+			AgentController predatorController;
+			try {
+				predatorController = container.createNewAgent("Predator " + i, "Agents.Predator", null);
+				predatorController.start();
+			} catch (StaleProxyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
+	public static void addPreys(AgentContainer container, int n) {
+		
+		AgentController preyController;
+		
+		for(int i = 0; i < n; i++) {
+			try {
+				preyController = container.createNewAgent("Prey " + i, "Agents.Prey", null);
+				preyController.start();
+			} catch (StaleProxyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
 	 
 }
