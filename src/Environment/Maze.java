@@ -2,6 +2,7 @@ package Environment;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Maze {
 	private enum Direction { North, South, East, West };
@@ -56,7 +57,7 @@ public class Maze {
 	private int mazeHeight;
 	private Tile[][] maze;
 	private HashMap<Tile, Integer> numTiles;
-	private HashMap<String, MazeEntity> entities;
+	private ConcurrentHashMap<String, MazeEntity> entities;
 	
 	/**
 	 * Creates a Maze object with the default Pac-Man maze.
@@ -72,7 +73,7 @@ public class Maze {
 		this.mazeHeight = maze.length;
 		this.mazeWidth = maze.length != 0 ? maze[0].length : 0;
 		
-		entities = new HashMap<String, MazeEntity>();
+		entities = new ConcurrentHashMap<String, MazeEntity>();
 		numTiles = new HashMap<Tile, Integer>();
 		
 		for(int y = 0; y < this.mazeHeight; y++) {
