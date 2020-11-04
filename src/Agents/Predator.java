@@ -2,6 +2,7 @@ package Agents;
 
 import Behaviours.ListenerBehaviour;
 import Behaviours.PatrolBehaviour;
+import Environment.Maze;
 import jade.core.*;
 import jade.core.behaviours.Behaviour;
 import jade.domain.DFService;
@@ -15,8 +16,8 @@ public class Predator extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	Behaviour defaultBehaviour = new PatrolBehaviour(this, 1000);
+	private Behaviour defaultBehaviour = new PatrolBehaviour(this, 1000);
+	private Maze maze;
 
 	protected void setup() {
 		
@@ -29,6 +30,13 @@ public class Predator extends Agent {
 
 		agentDescription.setName(getAID()); // required
 		agentDescription.addServices(serviceDescription); // required
+		
+		//Retrieve arguments
+		Object[] args = getArguments();
+		maze = (Maze) args[0];
+		
+		
+		maze.registerEntity(getName(), true);
 		
 		try {
 			DFService.register(this, agentDescription);
@@ -46,6 +54,10 @@ public class Predator extends Agent {
 		
 		this.removeBehaviour(defaultBehaviour);
 		
+	}
+	
+	public Maze getMaze() {
+		return maze;
 	}
 
 }

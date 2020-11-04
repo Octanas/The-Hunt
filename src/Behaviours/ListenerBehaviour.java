@@ -8,8 +8,11 @@ import jade.lang.acl.ACLMessage;
 
 public class ListenerBehaviour extends TickerBehaviour{
 
+	private Predator agent;
+	
 	public ListenerBehaviour(Agent a, long period) {
 		super(a, period);
+		agent = (Predator) a;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -19,7 +22,7 @@ public class ListenerBehaviour extends TickerBehaviour{
 		//System.out.println("I'm listening - " + this.getAgent().getName());
 		
 		//Waiting for a message
-		ACLMessage message = getAgent().receive();
+		ACLMessage message = agent.receive();
 		
 		if(message != null) {
 			analyseMessage(message);
@@ -37,9 +40,8 @@ public class ListenerBehaviour extends TickerBehaviour{
             	System.out.println("Performative:" + message.getPerformative());
                 System.out.println("Content:" + message.getContent());
                 System.out.println("Sender:" + message.getSender());
-                getAgent().addBehaviour(new ChaseBehaviour(getAgent(), 2000));
-                Predator predator = (Predator) getAgent();
-                predator.removeDefaultBehaviour();
+                getAgent().addBehaviour(new ChaseBehaviour(agent, 2000));
+                agent.removeDefaultBehaviour();
                 break;
             case ACLMessage.PROPOSE:
                 break;

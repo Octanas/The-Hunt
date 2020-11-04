@@ -12,7 +12,7 @@ public class Maze {
 		H	// HUNTER ZONE
 	};
 	
-	private class MazeEntity {
+	public class MazeEntity {
 		Direction direction;
 		int xCoordinate;
 		int yCoordinate;
@@ -257,15 +257,13 @@ public class Maze {
 	 */
 	private int[] getRandomCoordinate(Tile tile) {
 		Random rand = new Random();
-		int tileNumber = rand.nextInt(this.mazeHeight * this.mazeWidth);
 		
 		int numTile = this.numTiles.getOrDefault(tile, 0);
 		
+		int tileNumber = rand.nextInt(numTile);
+		
 		if(numTile == 0)
 			return null;
-		else {
-			tileNumber = tileNumber % numTile;
-		}
 		
 		int numFound = 0;
 		
