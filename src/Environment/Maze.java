@@ -56,6 +56,7 @@ public class Maze {
 	private int mazeWidth;
 	private int mazeHeight;
 	private Tile[][] maze;
+	private Graph mazeGraph;
 	private HashMap<Tile, Integer> numTiles;
 	private ConcurrentHashMap<String, MazeEntity> entities;
 	
@@ -73,6 +74,8 @@ public class Maze {
 		this.mazeHeight = maze.length;
 		this.mazeWidth = maze.length != 0 ? maze[0].length : 0;
 		
+		this.createGraph();
+		
 		entities = new ConcurrentHashMap<String, MazeEntity>();
 		numTiles = new HashMap<Tile, Integer>();
 		
@@ -80,6 +83,23 @@ public class Maze {
 			for(int x = 0; x < this.mazeWidth; x++) {
 				int currValue = numTiles.getOrDefault(this.maze[y][x], 0);
 				numTiles.put(this.maze[y][x], currValue + 1);
+			}
+		}
+	}
+	
+	private void createGraph() {
+		mazeGraph = new Graph();
+		
+		for(int y = 0; y < this.mazeHeight; y++) {
+			for(int x = 0; x < this.mazeWidth; x++) {
+				if(this.maze[y][x].equals(Tile.C) || this.maze[y][x].equals(Tile.H)) {
+					mazeGraph.addVertex(x, y);
+					
+					mazeGraph.addEdge(x, y, x - 1, y);
+					mazeGraph.addEdge(x, y, x + 1, y);
+					mazeGraph.addEdge(x, y, x, y - 1);
+					mazeGraph.addEdge(x, y, x, y + 1);
+				}
 			}
 		}
 	}
