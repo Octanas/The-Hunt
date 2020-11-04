@@ -31,8 +31,7 @@ public class Prey extends Agent{
 		
 		//Retrieve arguments
 		Object[] args = getArguments();
-		Maze maze = (Maze) args[0];
-		
+		maze = (Maze) args[0];
 		
 		maze.registerEntity(getName(), false);
 		
