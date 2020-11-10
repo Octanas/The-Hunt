@@ -5,12 +5,14 @@ import Environment.Graph.Vertex;
 
 public class Astar 
 {
+	private Graph graph;
 	private PriorityQueue<Vertex> openVertexes; //Vertexes not yet evaluated
 	//private Vertex[][] searchArea;
-	private Vertex initialvertex;
+	private Vertex initialVertex;
 	private Vertex finalVertex;
 	
 	public Astar(Graph g, Vertex initialVertex, Vertex finalVertex) {
+		this.graph = g;
         setInitialVertex(initialVertex);
         setFinalVertex(finalVertex);
         this.openVertexes = new PriorityQueue<Vertex>(new Comparator<Vertex>() {
@@ -20,15 +22,65 @@ public class Astar
             }
         });
         
-        initialVertex.setHeuristicCost(manhattanDistance(initialVertex, finalVertex));
-        initialVertex.setFinalCost(initialVertex.getHeuristicCost());
-        finalVertex.setHeuristicCost(0);
-        
-        
+        initialVertex.setG(0);
+        initialVertex.setFinalCost(this.manhattanDistance(initialVertex, finalVertex));
     }
 	
+	public void process() {
+		openVertexes.add(initialVertex);
+		Vertex current;
+		
+		while(openVertexes.size() != 0)
+		{
+			current = openVertexes.poll();
+			
+			if(current == null) 
+				break;
+			
+			current.close();
+			
+			if(current.equals(finalVertex))
+				return;
+			
+			for(int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
+				Vertex tmp = graph.getAdjVertexes(current).get(i);
+				if(!tmp.closed) {
+					int newGCost = current.getG() + 1;
+					int newFinalCost = this.manhattanDistance(tmp, finalVertex) + newGCost;
+					if (openVertexes.contains(tmp)) {
+						if(tmp.getFinalCost() > newFinalCost) {
+							tmp.setParent(current);
+							tmp.setG(newGCost);
+							tmp.setFinalCost(newFinalCost);
+						}
+					}
+					else {
+						tmp.setParent(current);
+						tmp.setG(newGCost);
+						tmp.setFinalCost(newFinalCost);
+						openVertexes.add(tmp);
+					}
+				}
+			}
+		}
+	}
+	
+	public List<Vertex> getPath(){
+		List<Vertex> path = new ArrayList<Vertex>();
+		Vertex v = finalVertex;
+		path.add(finalVertex);
+		while(v.getParent() != null) {
+			path.add(v.getParent());
+			v = v.getParent();
+		}
+		
+		Collections.reverse(path);
+		
+		return path;
+	}
+	
 	public void setInitialVertex(Vertex vertex) {
-		this.initialvertex = vertex;
+		this.initialVertex = vertex;
 	}
 	
 	public void setFinalVertex(Vertex vertex) {
@@ -52,7 +104,7 @@ public class Astar
 	 * 	calculate f value to start vertex
 	 * 	while current vertex in not the destination
 	 *		for each vertex adjacent to current
-	 *			if vertex not in closed list and not in closed list then
+	 *			if vertex not in closed list and not in open list then
 	 *				add vertex to open list
 	 *				calculate distance from start (g)
 	 *				calculate heuristic distance to destination (h)

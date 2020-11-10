@@ -9,16 +9,25 @@ public class Graph {
 	class Vertex {
 	    public int xCoordinate;
 	    public int yCoordinate;
-	    private int heuristicCost;
 	    private int finalCost; // G + H with 
 	    // G(n) cost of the path from the star node to n
 	    // H(n) the heuristic that estimates the cost of the cheapest path from n to the goal
 	    public boolean solution = false; // if the vertex is part of the solution path
 	    public boolean closed = false; // indicates if the vertex is already evaluated
+	    private Vertex parent;
+	    private int g;
 	    
 	    Vertex(int xCoordinate, int yCoordinate) {
 	        this.xCoordinate = xCoordinate;
 	        this.yCoordinate = yCoordinate;
+	    }
+	    
+	    public void setParent(Vertex v) {
+	    	this.parent = v;
+	    }
+	    
+	    public Vertex getParent() {
+	    	return this.parent;
 	    }
 	 
 	    public int hashCode() {
@@ -50,16 +59,25 @@ public class Graph {
 	    	this.finalCost = f;
 	    }
 	    
-	    int getHeuristicCost() {
-	    	return this.heuristicCost;
+	    void close() {
+	    	this.closed = true;
 	    }
 	    
-	    void setHeuristicCost(int h) {
-	    	this.heuristicCost = h;
+	    public void setG(int n) {
+	    	this.g = n;
+	    }
+	    
+	    public int getG() {
+	    	return this.g;
 	    }
 	}
 	
 	private ConcurrentHashMap<Vertex, List<Vertex>> adjVertices;
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public List<Vertex> getAdjVertexes(Vertex v){
+		return this.adjVertices.get(v);
+	}
 	
 	public Graph() {
 		adjVertices = new ConcurrentHashMap<Vertex, List<Vertex>>();
