@@ -5,9 +5,9 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Maze {
-	private enum Direction { North, South, East, West };
-	private enum Movement { Up, Down, Left, Right };
-	private enum Tile { 
+	public enum Direction { North, South, East, West };
+	public enum Movement { Up, Down, Left, Right };
+	public enum Tile { 
 		W,	// WALL
 		C, 	// CORRIDOR
 		H	// HUNTER ZONE
@@ -17,13 +17,25 @@ public class Maze {
 		Direction direction;
 		int xCoordinate;
 		int yCoordinate;
-		boolean isHunter;
+		public boolean isHunter;
 		
 		public MazeEntity(boolean isHunter, int xCoordinate, int yCoordinate, Direction direction) {
 			this.isHunter = isHunter;
 			this.xCoordinate = xCoordinate;
 			this.yCoordinate = yCoordinate;
 			this.direction = direction;
+		}
+		
+		public Direction getDirection() {
+			return direction;
+		}
+		
+		public int getXCoordinate() {
+			return xCoordinate;
+		}
+		
+		public int getYCoordinate() {
+			return yCoordinate;
 		}
 	}
 
@@ -300,6 +312,22 @@ public class Maze {
 		}
 		
 		return null;
+	}
+	
+	public int getWidth() {
+		return this.mazeWidth;
+	}
+	
+	public int getHeight() {
+		return this.mazeHeight;
+	}
+	
+	public Tile[][] getMazeArrayRepresentation() {
+		return this.maze;
+	}
+	
+	public ConcurrentHashMap<String, MazeEntity> getEntities() {
+		return this.entities;
 	}
 	
 	/**
