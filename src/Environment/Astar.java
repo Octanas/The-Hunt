@@ -13,6 +13,13 @@ public class Astar
 		private Vertex parent;
 		private boolean closed = false;
 		
+		public VertexInfo(int h, int g, Vertex p) {
+			this.hValue = h;
+			this.gValue = g;
+			this.updateFValue();
+			this.parent = p;
+		}
+		
 		public void setHValue(int hValue) {
 			this.hValue = hValue;
 		}
@@ -94,12 +101,12 @@ public class Astar
 			
 			for(int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
 				Vertex tmp = graph.getAdjVertexes(current).get(i);
-				VertexInfo tmpInfo = info.get(tmp);
 				if(!info.get(tmp).isClosed()) {
 					int newGCost = info.get(current).getGValue() + 1;
 					int newHCost = this.manhattanDistance(tmp, finalVertex);
 					int newFinalCost = newHCost + newGCost;
 					if (openVertexes.contains(tmp)) {
+						VertexInfo tmpInfo = info.get(tmp);
 						if(info.get(tmp).getFValue() > newFinalCost) {
 							tmpInfo.setParent(current);
 							tmpInfo.setGValue(newGCost);
@@ -108,10 +115,8 @@ public class Astar
 						}
 					}
 					else {
-						tmpInfo.setParent(current);
-						tmpInfo.setGValue(newGCost);
-						tmpInfo.setHValue(newHCost);
-						tmpInfo.updateFValue();
+						VertexInfo tmpInfo = new VertexInfo(newHCost, newGCost, current);
+						info.put(tmp, tmpInfo);
 						openVertexes.add(tmp);
 					}
 				}
@@ -131,6 +136,10 @@ public class Astar
 		Collections.reverse(path);
 		
 		return path;
+	}
+	
+	public int getFValue() {
+		return info.get(finalVertex).getFValue();
 	}
 	
 	public void setInitialVertex(Vertex vertex) {
