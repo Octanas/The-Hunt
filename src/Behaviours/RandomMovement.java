@@ -8,7 +8,7 @@ import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 
 public class RandomMovement extends TickerBehaviour {
-	
+
 	private Prey agent;
 
 	public RandomMovement(Agent a, long period) {
@@ -17,12 +17,12 @@ public class RandomMovement extends TickerBehaviour {
 	}
 
 	@Override
-	protected void onTick() {		
+	protected void onTick() {
 		Maze maze = agent.getMaze();
 
 		if (maze != null) {
 			Random rand = new Random();
-			
+
 			Maze.Direction direction = maze.getEntities().get(agent.getName()).getDirection();
 
 			boolean success = false;
@@ -30,13 +30,14 @@ public class RandomMovement extends TickerBehaviour {
 			while (!success) {
 				Maze.Movement chosenMovement;
 
+				// This do while makes sure the chosen movement is not a backwards movement
 				do {
 					chosenMovement = Maze.Movement.values()[rand.nextInt(Maze.Movement.values().length)];
-				} while ((direction == Maze.Direction.North && chosenMovement == Maze.Movement.Down)
-						|| (direction == Maze.Direction.South && chosenMovement == Maze.Movement.Up)
-						|| (direction == Maze.Direction.East && chosenMovement == Maze.Movement.Left)
-						|| (direction == Maze.Direction.West && chosenMovement == Maze.Movement.Right));
-				
+				} while (direction.equals(Maze.Direction.North) && chosenMovement.equals(Maze.Movement.Down)
+						|| direction.equals(Maze.Direction.South) && chosenMovement.equals(Maze.Movement.Up)
+						|| direction.equals(Maze.Direction.East) && chosenMovement.equals(Maze.Movement.Left)
+						|| direction.equals(Maze.Direction.West) && chosenMovement.equals(Maze.Movement.Right));
+
 				success = maze.moveEntity(agent.getName(), chosenMovement);
 			}
 		}
