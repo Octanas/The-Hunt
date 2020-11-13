@@ -25,6 +25,8 @@ public class Hunt {
         
         //Initialize maze
         maze = Maze.defaultMaze();
+        
+        VisualizerWindow.run(maze);
 
         //Add agents
         AgentContainer mainContainer = runt.createMainContainer(profile);

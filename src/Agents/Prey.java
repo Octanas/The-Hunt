@@ -2,6 +2,7 @@ package Agents;
 
 
 import Behaviours.PreyMovement;
+import Behaviours.RandomMovement;
 import Environment.Maze;
 import jade.core.*;
 import jade.domain.DFService;
@@ -31,8 +32,7 @@ public class Prey extends Agent{
 		
 		//Retrieve arguments
 		Object[] args = getArguments();
-		Maze maze = (Maze) args[0];
-		
+		maze = (Maze) args[0];
 		
 		maze.registerEntity(getName(), false);
 		
@@ -44,6 +44,7 @@ public class Prey extends Agent{
 				
 		// Adding initial behaviours
 		addBehaviour(new PreyMovement(this, 1000));
+		//addBehaviour(new RandomMovement(this, 1000));
 	}
 	
 	public Maze getMaze() {
