@@ -4,19 +4,19 @@ import java.util.List;
 
 import Agents.Predator;
 import Environment.Astar;
-import Environment.Graph;
-import Environment.Vertex;
 import Environment.Maze;
-import jade.core.*;
+import Environment.Vertex;
+import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 
 public class ChaseBehaviour extends TickerBehaviour{
 	
+	private static final long serialVersionUID = -8035807564820299915L;
+
 	private Predator agent;
 
 	public ChaseBehaviour(Agent a, long period) {
 		super(a, period);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

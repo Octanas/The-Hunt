@@ -24,6 +24,8 @@ import Environment.Maze.Tile;
 
 public class VisualizerWindow extends JPanel {
 
+	private static final long serialVersionUID = -3642023895537170950L;
+	
 	final int frameRate = 30;
 	final int animationFrames = 10;
 

@@ -3,22 +3,19 @@ package Behaviours;
 import java.util.Random;
 
 import Agents.Predator;
-import Agents.Prey;
-import jade.core.*;
+import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 public class StartBehaviour extends SimpleBehaviour{
 	
+	private static final long serialVersionUID = 7366798801412592530L;
+
 	private Predator agent;
 
 	public StartBehaviour(Agent a) {
 		agent = (Predator) a;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -52,7 +49,7 @@ public class StartBehaviour extends SimpleBehaviour{
 
 	@Override
 	public boolean done() {
-		// TODO Auto-generated method stub
+		// TODO Implement
 		return false;
 	}
 

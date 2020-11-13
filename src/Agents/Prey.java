@@ -11,14 +11,14 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class Prey extends Agent {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2160457764102179509L;
+	
 	private Maze maze;
 
 	protected void setup() {
 
+		// Registration with the DF
+		// Registration with the DF
 		// Registration with the DF
 		DFAgentDescription agentDescription = new DFAgentDescription();
 		ServiceDescription serviceDescription = new ServiceDescription();
