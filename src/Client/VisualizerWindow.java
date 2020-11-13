@@ -2,6 +2,7 @@ package Client;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -9,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,7 +31,9 @@ public class VisualizerWindow extends JPanel {
 	Shape tileShape = new Polygon(new int[] { 0, tileLength, tileLength, 0 },
 			new int[] { tileLength, tileLength, 0, 0 }, 4);
 	Shape entityShape = new Ellipse2D.Double(0, 0, tileLength, tileLength);
-	
+	Shape eliminatedShape = new Polygon(new int[] { 0, 5, 20, 35, 40, 25, 40, 35, 20, 5, 0, 15 },
+			new int[] { 35, 40, 25, 40, 35, 20, 5, 0, 15, 0, 5, 20 }, 12);
+
 	// Center in 0, 0
 	Shape directionIndicator = new Polygon(new int[] { -8, 8, 0 }, new int[] { -12, -12, -18 }, 3);
 
@@ -93,10 +97,21 @@ public class VisualizerWindow extends JPanel {
 		g2d.setTransform(saveTransform);
 		g2d.setTransform(identity);
 
-		// Draw entities
+		ArrayList<MazeEntity> entities = new ArrayList<MazeEntity>();
+		
 		for (String entityName : maze.getEntities().keySet()) {
 			MazeEntity entity = maze.getEntities().get(entityName);
-
+			
+			if(entity != null) {
+				if(entity.isHunter)
+					entities.add(entity);
+				else
+					entities.add(0, entity);
+			}
+		}
+		
+		// Draw entities
+		for (MazeEntity entity : entities) {
 			// Hunters are Black, beasts are white
 			if (entity.isHunter) {
 				g2d.setColor(Color.BLACK);
@@ -133,6 +148,41 @@ public class VisualizerWindow extends JPanel {
 
 			g2d.setTransform(saveTransform);
 			g2d.setTransform(identity);
+
+			if (entity.isCaught()) {
+				g2d.setColor(Color.RED);
+
+				g2d.translate(entity.getXCoordinate() * tileLength, entity.getYCoordinate() * tileLength);
+				g2d.fill(eliminatedShape);
+
+				g2d.setTransform(saveTransform);
+				g2d.setTransform(identity);
+			}
+
+			if (maze.isOver()) {
+				g.setColor(Color.WHITE);
+				g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 50));
+
+				String msg = "END";
+				int msgWidth = g.getFontMetrics().stringWidth(msg);
+				int msgAscent = g.getFontMetrics().getAscent();
+
+				int msgX = getWidth() / 2 - msgWidth / 2;
+				int msgY = getHeight() / 2 + msgAscent / 2;
+
+				g.drawString(msg, msgX, msgY);
+
+				g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+
+				msg = "All beasts have been caught";
+				msgWidth = g.getFontMetrics().stringWidth(msg);
+				msgAscent = g.getFontMetrics().getAscent();
+
+				msgX = getWidth() / 2 - msgWidth / 2;
+				msgY = getHeight() - tileLength / 2 + msgAscent / 2;
+
+				g.drawString(msg, msgX, msgY);
+			}
 		}
 	}
 
