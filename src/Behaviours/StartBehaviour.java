@@ -39,23 +39,11 @@ public class StartBehaviour extends SimpleBehaviour{
         String message = "Roll " + String.valueOf(agent.getRolledValue());
         
         for(int i = 0; i < predators.length; i++) {
-        	sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
+        	agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
         }
         
         
 	        
-	}
-	
-	public void sendMessageTo(AID predatorID, int performative, String content) {
-		
-		ACLMessage message = new ACLMessage(performative);
-
-        message.addReceiver(predatorID);
-        message.setContent(content);
-        message.addReplyTo(agent.getAID());
-
-        agent.send(message);
-        
 	}
 	
 	public int onEnd() {

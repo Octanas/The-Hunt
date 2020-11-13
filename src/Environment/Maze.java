@@ -241,7 +241,7 @@ public class Maze {
 
 		if (yCoordinate < maze.length - 1 && (maze[yCoordinate + 1][xCoordinate].equals(Tile.C)
 				|| maze[yCoordinate + 1][xCoordinate].equals(Tile.H)
-						&& maze[yCoordinate][xCoordinate].equals(Tile.C))) {
+						&& maze[yCoordinate][xCoordinate].equals(Tile.H))) {
 			validMoves.add(Movement.Down);
 		}
 
@@ -287,7 +287,7 @@ public class Maze {
 		} else if (movement.equals(Movement.Down)) {
 			if (entity.yCoordinate < maze.length - 1 && (maze[entity.yCoordinate + 1][entity.xCoordinate].equals(Tile.C)
 					|| maze[entity.yCoordinate + 1][entity.xCoordinate].equals(Tile.H)
-							&& maze[entity.yCoordinate][entity.xCoordinate].equals(Tile.C))) {
+							&& maze[entity.yCoordinate][entity.xCoordinate].equals(Tile.H))) {
 				entity.yCoordinate += 1;
 				entity.direction = Direction.South;
 			} else

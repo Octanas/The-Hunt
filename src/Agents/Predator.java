@@ -13,6 +13,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 
 public class Predator extends Agent {
 	
@@ -20,9 +21,9 @@ public class Predator extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Behaviour patrolBehaviour = new PatrolBehaviour((Predator)this, 1000);
+	private Behaviour patrolBehaviour = new PatrolBehaviour((Predator)this, 750);
 	private Behaviour startBehaviour = new StartBehaviour((Predator)this);
-	private Behaviour chaseBehaviour = new ChaseBehaviour((Predator)this, 1000);
+	private Behaviour chaseBehaviour = new ChaseBehaviour((Predator)this, 750);
 	private Behaviour listenerBehaviour = new ListenerBehaviour((Predator)this);
 	private Maze maze;
 	
@@ -69,6 +70,18 @@ public class Predator extends Agent {
 	
 	
 	// Methods
+
+	public void sendMessageTo(AID predatorID, int performative, String content) {
+		
+		ACLMessage message = new ACLMessage(performative);
+
+        message.addReceiver(predatorID);
+        message.setContent(content);
+        message.addReplyTo(this.getAID());
+
+        this.send(message);
+        
+	}
 	
 	public void removeBehaviour(String behaviour){
 		

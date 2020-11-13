@@ -34,7 +34,7 @@ public class ListenerBehaviour extends CyclicBehaviour{
 	private void analyseMessage(ACLMessage message) {
 
 		int type = message.getPerformative();
-		System.out.println("Content:" + message.getContent());
+		//System.out.println("Content:" + message.getContent());
 		
 		String[] messageArray = message.getContent().split(" ");
 

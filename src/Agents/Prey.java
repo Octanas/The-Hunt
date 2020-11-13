@@ -43,7 +43,7 @@ public class Prey extends Agent{
 		}
 				
 		// Adding initial behaviours
-		addBehaviour(new PreyMovement(this, 1000));
+		addBehaviour(new PreyMovement(this, 500));
 		//addBehaviour(new RandomMovement(this, 1000));
 	}
 	
