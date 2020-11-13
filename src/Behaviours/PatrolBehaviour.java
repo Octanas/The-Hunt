@@ -1,10 +1,13 @@
 package Behaviours;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
 import Agents.Predator;
 import Agents.Prey;
+import Environment.Maze;
 import jade.core.*;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -59,35 +62,38 @@ public class PatrolBehaviour extends TickerBehaviour{
 	@Override
 	protected void onTick() {
 	        
-        if(agent.getName().equals("Predator 1@192.168.1.188:1099/JADE")) {
-        	System.out.println("We should chase! - " + agent.getName());
-        	agent.addBehaviour(new ChaseBehaviour(agent, 1000));
-        	
-        	// search for other predators
-        	DFAgentDescription agentDescription = new DFAgentDescription();
-            ServiceDescription serviceDescription  = new ServiceDescription();
-            serviceDescription.setType( "PredatorAgent" );
-            agentDescription.addServices(serviceDescription);
-            
-            DFAgentDescription[] result = null;
-			try {
-				result = DFService.search(agent, agentDescription);
-			} catch (FIPAException e) {
-				e.printStackTrace();
-			}
-            
-            System.out.println(result.length + " results" );
-            if (result.length>0) {
-            	for(int i = 0; i < result.length; i++) {
-            		sendMessageTo(result[i].getName(), ACLMessage.INFORM, "Prey 1 1");
-            	}
-            }
-
-        	stop();
-        }
-        else {
-        	System.out.println("I'm patroling - " + this.agent.getName());
-        }
+		Maze maze = agent.getMaze();
+		Maze.MazeEntity self = maze.getEntities().get(agent.getName());
+		Maze.Direction direction = self.getDirection();
+		
+		// Calculate chances based in distance to Bias
+		int chanceX = Math.abs(self.getXCoordinate() - agent.getBiasX());
+		int chanceY = Math.abs(self.getYCoordinate() - agent.getBiasY());
+		
+		
+		
+		
+		
+		
+		
+		// Verify is prey is in vision
+		Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
+		// If yes send info to other hunters
+		if(visibleEntity != null && !visibleEntity.isHunter) {
+			
+			DFAgentDescription[] predators = agent.getPredators();
+	        String message = "Prey " + String.valueOf(visibleEntity.getXCoordinate()) + " " + String.valueOf(visibleEntity.getXCoordinate());
+	        
+	        for(int i = 0; i < predators.length; i++) {
+	        	sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
+	        }
+	        agent.setPreyX(visibleEntity.getXCoordinate());
+    		agent.setPreyY(visibleEntity.getXCoordinate());
+    		agent.addBehaviour(agent.getChaseBehaviour());
+			stop();
+		}
+		
+		
         
 	        
 	}
@@ -105,6 +111,7 @@ public class PatrolBehaviour extends TickerBehaviour{
 	}
 	
 	public int onEnd() {
+		System.out.println("Patrol Behaviour Stopped!");
 		return 0;
 	}
 

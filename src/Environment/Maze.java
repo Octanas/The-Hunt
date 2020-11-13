@@ -451,6 +451,10 @@ public class Maze {
 	public ConcurrentHashMap<String, MazeEntity> getEntities() {
 		return this.entities;
 	}
+	
+	public Graph getGraph() {
+		return mazeGraph;
+	}
 
 	/**
 	 * Returns the maze representation in a String object.

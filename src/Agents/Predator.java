@@ -30,6 +30,8 @@ public class Predator extends Agent {
 	private int rolledValue;
 	private int biasX;
 	private int biasY;
+	private int preyX;
+	private int preyY;
 	
 
 	protected void setup() {
@@ -121,6 +123,14 @@ public class Predator extends Agent {
 		return biasY;
 	}
 	
+	public int getPreyX() {
+		return preyX;
+	}
+	
+	public int getPreyY() {
+		return preyY;
+	}
+	
 	public TreeSet<Integer> getAgentRolls(){
 		return this.agentRolls;
 	}
@@ -157,9 +167,26 @@ public class Predator extends Agent {
 		this.biasY = biasY;
 	}
 	
+	public void setPreyX(int preyX) {
+		this.preyX = preyX;
+	}
+	
+	public void setPreyY(int preyY) {
+		this.preyY = preyY;
+	}
+	
 	public void addAgentRoll(int agentRoll) {
 		this.agentRolls.add(agentRoll);
 	}
+
+
+
+
+
+
+
+
+
 
 
 	

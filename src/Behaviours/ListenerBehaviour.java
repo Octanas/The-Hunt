@@ -48,6 +48,9 @@ public class ListenerBehaviour extends CyclicBehaviour{
                 		}
                 		break;
                 	case "Prey": 
+                		agent.setPreyX(Integer.parseInt(messageArray[1]));
+                		agent.setPreyY(Integer.parseInt(messageArray[2]));
+                		agent.addBehaviour(agent.getChaseBehaviour());
                 		break;
                 	default:
                 		break;

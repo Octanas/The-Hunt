@@ -1,7 +1,7 @@
 package Environment;
 
 import java.util.*;
-import Environment.Graph.Vertex;
+import Environment.Vertex;
 
 public class Astar 
 {
