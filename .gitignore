@@ -99,3 +99,6 @@ local.properties
 # JADE Temp Files
 APDescription.txt
 MTPs-Main-Container.txt
+
+# VS Code files
+.vscode
