@@ -3,7 +3,9 @@ package Environment;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -216,6 +218,37 @@ public class Maze {
 		entities.put(name, new MazeEntity(isHunter, xCoordinate, yCoordinate, Direction.North));
 
 		return true;
+	}
+
+	/**
+	 * Returns the list of possible movements in a specified tile.
+	 * @param xCoordinate	X coordinate of the current tile;
+	 * @param yCoordinate	Y coordinate of the current tile;
+	 * @return				List of valid moves to make from the current tile.
+	 */
+	public List<Movement> possibleMovements(int xCoordinate, int yCoordinate) {
+		if(maze[yCoordinate][xCoordinate].equals(Tile.W))
+			return Collections.emptyList();
+
+		ArrayList<Movement> validMoves = new ArrayList<Movement>();
+
+		if (yCoordinate > 0 && maze[yCoordinate - 1][xCoordinate].equals(Tile.C)) {
+			validMoves.add(Movement.Up);
+		}
+
+		if (yCoordinate < maze.length - 1 && maze[yCoordinate + 1][xCoordinate].equals(Tile.C)) {
+			validMoves.add(Movement.Down);
+		}
+
+		if (xCoordinate > 0 && maze[yCoordinate][xCoordinate - 1].equals(Tile.C)) {
+			validMoves.add(Movement.Left);
+		}
+
+		if (xCoordinate < maze[0].length && maze[yCoordinate][xCoordinate + 1].equals(Tile.C)) {
+			validMoves.add(Movement.Right);
+		}
+
+		return validMoves;
 	}
 
 	/**
