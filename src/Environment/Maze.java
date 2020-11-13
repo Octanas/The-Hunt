@@ -68,6 +68,12 @@ public class Maze {
 		public boolean isCaught() {
 			return !isHunter && caught;
 		}
+
+		public MazeEntity clone() {
+			MazeEntity clone = new MazeEntity(this.isHunter, this.xCoordinate, this.yCoordinate, this.direction);
+			clone.setCaught(this.isCaught());
+			return clone;
+		}
 	}
 
 	private static Tile[][] defaultMaze = new Tile[][] {
@@ -398,7 +404,7 @@ public class Maze {
 	 * @return
 	 */
 	public boolean isOver() {
-		if(entities.size() == 0)
+		if (entities.size() == 0)
 			return false;
 
 		for (String entityName : entities.keySet()) {
