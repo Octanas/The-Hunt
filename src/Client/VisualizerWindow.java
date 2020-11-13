@@ -158,6 +158,7 @@ public class VisualizerWindow extends JPanel {
 				g2d.setTransform(saveTransform);
 				g2d.setTransform(identity);
 			}
+		}
 			
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
@@ -195,7 +196,6 @@ public class VisualizerWindow extends JPanel {
 				g.drawString(msg, msgX, msgY);
 			}
 		}
-	}
 
 	public static void run(Maze maze) {
 		// Run the GUI codes on the Event-Dispatching thread for thread safety

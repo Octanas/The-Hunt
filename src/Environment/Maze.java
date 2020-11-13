@@ -398,6 +398,9 @@ public class Maze {
 	 * @return
 	 */
 	public boolean isOver() {
+		if(entities.size() == 0)
+			return false;
+
 		for (String entityName : entities.keySet()) {
 			MazeEntity entity = entities.get(entityName);
 
