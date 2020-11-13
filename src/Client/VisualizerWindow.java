@@ -158,17 +158,28 @@ public class VisualizerWindow extends JPanel {
 				g2d.setTransform(saveTransform);
 				g2d.setTransform(identity);
 			}
+			
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+
+			String msg = maze.getClock();
+			int msgWidth = g.getFontMetrics().stringWidth(msg);
+			int msgAscent = g.getFontMetrics().getAscent();
+
+			int msgX = getWidth() / 2 - msgWidth / 2;
+			int msgY = tileLength / 2 + msgAscent / 2;
+
+			g.drawString(msg, msgX, msgY);
 
 			if (maze.isOver()) {
-				g.setColor(Color.WHITE);
 				g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 50));
 
-				String msg = "END";
-				int msgWidth = g.getFontMetrics().stringWidth(msg);
-				int msgAscent = g.getFontMetrics().getAscent();
+				msg = "END";
+				msgWidth = g.getFontMetrics().stringWidth(msg);
+				msgAscent = g.getFontMetrics().getAscent();
 
-				int msgX = getWidth() / 2 - msgWidth / 2;
-				int msgY = getHeight() / 2 + msgAscent / 2;
+				msgX = getWidth() / 2 - msgWidth / 2;
+				msgY = getHeight() / 2 + msgAscent / 2;
 
 				g.drawString(msg, msgX, msgY);
 

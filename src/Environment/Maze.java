@@ -1,5 +1,7 @@
 package Environment;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -118,6 +120,8 @@ public class Maze {
 	private Graph mazeGraph;
 	private HashMap<Tile, Integer> numTiles;
 	private ConcurrentHashMap<String, MazeEntity> entities;
+	private LocalDateTime startingTime;
+	private LocalDateTime endingTime;
 
 	/**
 	 * Creates a Maze object with the default Pac-Man maze.
@@ -145,6 +149,9 @@ public class Maze {
 				numTiles.put(this.maze[y][x], currValue + 1);
 			}
 		}
+		
+		startingTime = null;
+		endingTime = null;
 	}
 
 	private void createGraph() {
@@ -259,6 +266,10 @@ public class Maze {
 		// Check if with this move, a beast was caught
 		wasBeastCaught(entity.xCoordinate, entity.yCoordinate);
 
+		// When the first move is made, the clock starts
+		if(startingTime == null)
+			startingTime = LocalDateTime.now();
+		
 		return true;
 	}
 
@@ -345,7 +356,22 @@ public class Maze {
 				return false;
 		}
 		
+		// Clock stops when all beasts have been caught
+		if(endingTime == null)
+			endingTime = LocalDateTime.now();
+		
 		return true;
+	}
+	
+	public String getClock() {
+		if(startingTime == null)
+			return "00:00";
+		
+		LocalDateTime endTime = endingTime == null ? LocalDateTime.now() : endingTime;
+		
+		Duration duration = Duration.between(startingTime, endTime);
+		
+		return String.format("%02d", duration.toMinutes()) + ":" + String.format("%02d", duration.toSecondsPart());
 	}
 
 	/**
