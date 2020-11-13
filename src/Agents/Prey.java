@@ -23,7 +23,7 @@ public class Prey extends Agent{
 		DFAgentDescription agentDescription = new DFAgentDescription();
 		ServiceDescription serviceDescription = new ServiceDescription();
 
-		serviceDescription.setType("PreyrAgent"); // required
+		serviceDescription.setType("PreyAgent"); // required
 		serviceDescription.setName(getName()); // required
 
 		agentDescription.setName(getAID()); // required

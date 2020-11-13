@@ -1,5 +1,6 @@
 package Behaviours;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import Agents.Predator;
@@ -21,7 +22,40 @@ public class PatrolBehaviour extends TickerBehaviour{
 		agent = (Predator) a;
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public void onStart() {
+		
+		int i = 0;
+		Iterator iterator = agent.getAgentRolls().iterator();
+		while (iterator.hasNext()) {
+			if((int)iterator.next() == agent.getRolledValue()) break;
+		}
 
+
+		switch (i) {
+			case 0:
+				agent.setBiasX(3);
+				agent.setBiasY(3);
+				break;
+			case 1:
+				agent.setBiasX(13);
+				agent.setBiasY(3);
+				break;
+			case 2:
+				agent.setBiasX(3);
+				agent.setBiasY(15);
+				break;
+			case 3:
+				agent.setBiasX(13);
+				agent.setBiasY(15);
+				break;
+			default:
+				break;
+		}
+		
+	}
+	
 	@Override
 	protected void onTick() {
 	        
@@ -45,7 +79,7 @@ public class PatrolBehaviour extends TickerBehaviour{
             System.out.println(result.length + " results" );
             if (result.length>0) {
             	for(int i = 0; i < result.length; i++) {
-            		sendMessageTo(result[i].getName(), ACLMessage.INFORM, "Prey was seen!");
+            		sendMessageTo(result[i].getName(), ACLMessage.INFORM, "Prey 1 1");
             	}
             }
 
