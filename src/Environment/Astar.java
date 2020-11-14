@@ -86,46 +86,52 @@ public class Astar {
         this.closedVertexes = new HashSet<Vertex>();
     }
 	
-	public void process() {
-		openVertexes.add(initialVertex);
-		Vertex current;
+	public int process() {
+        openVertexes.add(initialVertex);
+        Vertex current;
 
-		while (openVertexes.size() != 0) {
-			current = openVertexes.poll();
+        while (true) {
+            if (openVertexes.size() == 0) {
+                return 1;
+            }
 
-			if (current == null)
-				break;
+            current = openVertexes.poll();
 
-			closedVertexes.add(current);
+            if (current == null)
+                break;
 
-			if (current.equals(finalVertex)) {
-				return;
-			}
+            closedVertexes.add(current);
 
-			for (int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
-				Vertex tmp = graph.getAdjVertexes(current).get(i);
-				if (!closedVertexes.contains(tmp)) {
-					int newGCost = info.get(current).getGValue() + 1;
-					int newHCost = this.manhattanDistance(tmp, finalVertex);
-					int newFinalCost = newHCost + newGCost;
-					if (openVertexes.contains(tmp)) {
-						VertexInfo tmpInfo = info.get(tmp);
-						if (info.get(tmp).getFValue() > newFinalCost) {
-							tmpInfo.setParent(current);
-							tmpInfo.setGValue(newGCost);
-							tmpInfo.setHValue(newHCost);
-							tmpInfo.updateFValue();
-						}
-					} else {
-						VertexInfo tmpInfo = new VertexInfo(newHCost, newGCost, current);
-						info.put(tmp, tmpInfo);
-						openVertexes.add(tmp);
-					}
-				}
-			}
-		}
-		
-	}
+            if (current.equals(finalVertex)) {
+                return 0;
+            }
+
+            for (int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
+                Vertex tmp = graph.getAdjVertexes(current).get(i);
+                if (!closedVertexes.contains(tmp)) {
+                    int newGCost = info.get(current).getGValue() + 1;
+                    int newHCost = this.manhattanDistance(tmp, finalVertex);
+                    int newFinalCost = newHCost + newGCost;
+                    if (openVertexes.contains(tmp)) {
+                        VertexInfo tmpInfo = info.get(tmp);
+                        if (info.get(tmp).getFValue() > newFinalCost) {
+                            tmpInfo.setParent(current);
+                            tmpInfo.setGValue(newGCost);
+                            tmpInfo.setHValue(newHCost);
+                            tmpInfo.updateFValue();
+                        }
+                    } else {
+                        VertexInfo tmpInfo = new VertexInfo(newHCost, newGCost, current);
+                        info.put(tmp, tmpInfo);
+                        openVertexes.add(tmp);
+                    }
+                }
+            }
+        }
+
+        return 2;
+
+    }
 
 	public List<Vertex> getPath() {
 		List<Vertex> path = new ArrayList<Vertex>();

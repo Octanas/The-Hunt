@@ -36,7 +36,17 @@ public class ChaseBehaviour extends TickerBehaviour {
 			Vertex prey = new Vertex(agent.getPreyX(), agent.getPreyY());
 
 			Astar astar = new Astar(maze.getGraph(), init, prey);
-			astar.process();
+			int proc = astar.process();
+			if(proc != 0) {
+				if (proc == 1) {
+					System.out.println("Unreachable Vertex...");
+					return;
+				}
+				else if (proc == 2) {
+					System.out.println("Error...");
+					return;
+				}
+			}
 			List<Vertex> path = astar.getPath();
 
 			movementsToTake = Maze.convertVertexPathToMovements(path);
