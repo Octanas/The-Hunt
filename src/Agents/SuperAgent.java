@@ -3,6 +3,7 @@ package Agents;
 import java.util.TreeSet;
 
 import Behaviours.ChaseBehaviour;
+import Behaviours.GoToBehaviour;
 import Behaviours.ListenerBehaviour;
 import Behaviours.PatrolBehaviour;
 import Behaviours.StartBehaviour;
@@ -100,6 +101,10 @@ public class SuperAgent extends Agent {
 		return new ListenerBehaviour(this);
 	}
 	
+	public Behaviour getGoToBehaviour() {
+		return new GoToBehaviour(this, agentSpeed);
+	}
+
 	public Behaviour getPatrolBehaviour() {
 		return new PatrolBehaviour(this, agentSpeed);
 	}

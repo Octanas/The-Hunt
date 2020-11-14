@@ -22,42 +22,6 @@ public class PatrolBehaviour extends TickerBehaviour {
 	public PatrolBehaviour(Agent a, long period) {
 		super(a, period);
 		agent = (SuperAgent) a;
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void onStart() {
-
-		System.out.println("Agent " + agent.getLocalName() + ": Started Patrolling");
-
-		int i = 0;
-		Iterator<Integer> iterator = agent.getAgentRolls().iterator();
-		while (iterator.hasNext()) {
-			if ((int) iterator.next() == agent.getRolledValue())
-				break;
-		}
-
-		switch (i) {
-			case 0:
-				agent.setBiasX(3);
-				agent.setBiasY(3);
-				break;
-			case 1:
-				agent.setBiasX(13);
-				agent.setBiasY(3);
-				break;
-			case 2:
-				agent.setBiasX(3);
-				agent.setBiasY(15);
-				break;
-			case 3:
-				agent.setBiasX(13);
-				agent.setBiasY(15);
-				break;
-			default:
-				break;
-		}
-
 	}
 
 	@Override

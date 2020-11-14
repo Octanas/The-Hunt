@@ -50,13 +50,14 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						} else {
 							agent.addAgentRoll(Integer.parseInt(messageArray[1]));
 						}
-						if (agent.getAgentRolls().size() == 4) {
+
+						if (agent.getAgentRolls().size() == agent.getPredators().length) {
 							// Send info to Predators
 							DFAgentDescription[] predators = agent.getPredators();
 
 							String patrolMessage = "Patrol";
 
-							Iterator iterator = agent.getAgentRolls().iterator();
+							Iterator<Integer> iterator = agent.getAgentRolls().iterator();
 							while (iterator.hasNext()) {
 								patrolMessage += " " + iterator.next();
 							}
@@ -89,7 +90,7 @@ public class ListenerBehaviour extends CyclicBehaviour {
 							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
 						}
 						agent.removeCurrentBehaviour();
-						agent.setCurrentBehaviour(agent.getPatrolBehaviour());
+						agent.setCurrentBehaviour(agent.getGoToBehaviour());
 						break;
 					default:
 						break;

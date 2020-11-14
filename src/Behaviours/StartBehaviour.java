@@ -12,9 +12,11 @@ public class StartBehaviour extends SimpleBehaviour{
 	
 	private SuperAgent agent;
 
+	private boolean done;
+
 	public StartBehaviour(Agent a) {
 		agent = (SuperAgent) a;
-		// TODO Auto-generated constructor stub
+		done = false;
 	}
 
 	@Override
@@ -36,20 +38,13 @@ public class StartBehaviour extends SimpleBehaviour{
         
         for(int i = 0; i < observers.length; i++) {
 			agent.sendMessageTo(observers[i].getName(), ACLMessage.INFORM, message);
-        }
-        
-        
-	    
-	}
-	
-	public int onEnd() {
-		return 0;
+		}
+		
+		done = true;
 	}
 
 	@Override
 	public boolean done() {
-		// TODO Implement
-		return false;
+		return done;
 	}
-
 }
