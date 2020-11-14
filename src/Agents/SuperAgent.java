@@ -19,7 +19,7 @@ public class SuperAgent extends Agent {
 
     private Behaviour patrolBehaviour = new PatrolBehaviour(this, 750);
 	private Behaviour startBehaviour = new StartBehaviour(this);
-	private Behaviour chaseBehaviour = new ChaseBehaviour(this, 750);
+	private Behaviour chaseBehaviour = new ChaseBehaviour(this, 750, 6);
     private Behaviour listenerBehaviour = new ListenerBehaviour(this);
     
     private TreeSet<Integer> agentRolls;

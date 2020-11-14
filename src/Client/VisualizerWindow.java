@@ -11,6 +11,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,9 +24,25 @@ import Environment.Maze.Tile;
 
 public class VisualizerWindow extends JPanel {
 
+	private static final long serialVersionUID = -3642023895537170950L;
+	
 	final int frameRate = 30;
+	final int animationFrames = 10;
 
 	final int tileLength = 40;
+
+	/**
+	 * Copy of last values for each entity
+	 */
+	HashMap<String, MazeEntity> pastEntities;
+	/**
+	 * Current animation frame for each entity
+	 */
+	HashMap<String, Integer> currentAnimationFrame;
+	/**
+	 * If each entity is ready to receive a new positon for the animation
+	 */
+	HashMap<String, Boolean> waitingForNewPosition;
 
 	// Upper left in 0, 0
 	Shape tileShape = new Polygon(new int[] { 0, tileLength, tileLength, 0 },
@@ -41,6 +58,10 @@ public class VisualizerWindow extends JPanel {
 
 	public VisualizerWindow(Maze maze) {
 		this.maze = maze;
+
+		pastEntities = new HashMap<String, MazeEntity>();
+		currentAnimationFrame = new HashMap<String, Integer>();
+		waitingForNewPosition = new HashMap<String, Boolean>();
 
 		Thread animationThread = new Thread() {
 			@Override
@@ -98,20 +119,60 @@ public class VisualizerWindow extends JPanel {
 		g2d.setTransform(identity);
 
 		ArrayList<MazeEntity> entities = new ArrayList<MazeEntity>();
-		
+		ArrayList<String> entityNames = new ArrayList<String>();
+
 		for (String entityName : maze.getEntities().keySet()) {
 			MazeEntity entity = maze.getEntities().get(entityName);
-			
-			if(entity != null) {
-				if(entity.isHunter)
+
+			if (entity != null) {
+				if (entity.isHunter) {
 					entities.add(entity);
-				else
+					entityNames.add(entityName);
+				} else {
 					entities.add(0, entity);
+					entityNames.add(0, entityName);
+				}
 			}
 		}
-		
+
 		// Draw entities
-		for (MazeEntity entity : entities) {
+		for (int i = 0; i < entities.size(); i++) {
+			MazeEntity entity = entities.get(i);
+			String entityName = entityNames.get(i);
+			MazeEntity pastEntity = pastEntities.get(entityName);
+
+			// First time this entity is on the screen, just initialize the values
+			// No animation will be done
+			if (pastEntity == null) {
+				pastEntities.put(entityName, entity.clone());
+				currentAnimationFrame.put(entityName, 0);
+				waitingForNewPosition.put(entityName, true);
+
+				pastEntity = entity;
+			}
+
+			// Got a new position, time to animate it
+			// Which means, go to the first frame of animation (1)
+			// It is set to 0 but it will be incremented right after this if block
+			if (waitingForNewPosition.get(entityName) && (entity.getXCoordinate() != pastEntity.getXCoordinate()
+					|| entity.getYCoordinate() != pastEntity.getYCoordinate()
+					|| entity.getDirection() != pastEntity.getDirection())) {
+				waitingForNewPosition.put(entityName, false);
+				currentAnimationFrame.put(entityName, 0);
+			}
+
+			// Animation frame incremented here!
+			currentAnimationFrame.put(entityName, currentAnimationFrame.get(entityName) + 1);
+
+			// Calculate the position of the entity in the current frame
+			int currentXTranslation = currentAnimationFrame.get(entityName)
+					* (entity.getXCoordinate() * tileLength - pastEntity.getXCoordinate() * tileLength)
+					/ animationFrames + pastEntity.getXCoordinate() * tileLength;
+			int currentYTranslation = currentAnimationFrame.get(entityName)
+					* (entity.getYCoordinate() * tileLength - pastEntity.getYCoordinate() * tileLength)
+					/ animationFrames + pastEntity.getYCoordinate() * tileLength;
+
+			// This will draw the entity body
 			// Hunters are Black, beasts are white
 			if (entity.isHunter) {
 				g2d.setColor(Color.BLACK);
@@ -119,7 +180,7 @@ public class VisualizerWindow extends JPanel {
 				g2d.setColor(Color.WHITE);
 			}
 
-			g2d.translate(entity.getXCoordinate() * tileLength, entity.getYCoordinate() * tileLength);
+			g2d.translate(currentXTranslation, currentYTranslation);
 			g2d.fill(entityShape);
 
 			g2d.setTransform(saveTransform);
@@ -134,7 +195,7 @@ public class VisualizerWindow extends JPanel {
 			}
 
 			g2d.translate(20, 20);
-			g2d.translate(entity.getXCoordinate() * tileLength, entity.getYCoordinate() * tileLength);
+			g2d.translate(currentXTranslation, currentYTranslation);
 
 			if (entity.getDirection().equals(Direction.East)) {
 				g2d.rotate(Math.toRadians(90));
@@ -149,53 +210,63 @@ public class VisualizerWindow extends JPanel {
 			g2d.setTransform(saveTransform);
 			g2d.setTransform(identity);
 
+			// This will draw the RED X over the entity, if it is a prey and it has been
+			// caught
 			if (entity.isCaught()) {
 				g2d.setColor(Color.RED);
 
-				g2d.translate(entity.getXCoordinate() * tileLength, entity.getYCoordinate() * tileLength);
+				g2d.translate(currentXTranslation, currentYTranslation);
 				g2d.fill(eliminatedShape);
 
 				g2d.setTransform(saveTransform);
 				g2d.setTransform(identity);
 			}
+
+			// Last animation frame reached, which means the animation is completed
+			// The last entity values are now the current ones
+			// and the entity is ready to receive a new movement to animate
+			if (currentAnimationFrame.get(entityName) == animationFrames) {
+				pastEntities.put(entityName, entity.clone());
+				waitingForNewPosition.put(entityName, true);
+			}
 		}
-			
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 
-			String msg = maze.getClock();
-			int msgWidth = g.getFontMetrics().stringWidth(msg);
-			int msgAscent = g.getFontMetrics().getAscent();
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 
-			int msgX = getWidth() / 2 - msgWidth / 2;
-			int msgY = tileLength / 2 + msgAscent / 2;
+		String msg = maze.getClock();
+		int msgWidth = g.getFontMetrics().stringWidth(msg);
+		int msgAscent = g.getFontMetrics().getAscent();
+
+		int msgX = getWidth() / 2 - msgWidth / 2;
+		int msgY = tileLength / 2 + msgAscent / 2;
+
+		g.drawString(msg, msgX, msgY);
+
+		if (maze.isOver()) {
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 50));
+
+			msg = "END";
+			msgWidth = g.getFontMetrics().stringWidth(msg);
+			msgAscent = g.getFontMetrics().getAscent();
+
+			msgX = getWidth() / 2 - msgWidth / 2;
+			msgY = getHeight() / 2 + msgAscent / 2;
 
 			g.drawString(msg, msgX, msgY);
 
-			if (maze.isOver()) {
-				g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 50));
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 
-				msg = "END";
-				msgWidth = g.getFontMetrics().stringWidth(msg);
-				msgAscent = g.getFontMetrics().getAscent();
+			msg = "All beasts have been caught";
+			msgWidth = g.getFontMetrics().stringWidth(msg);
+			msgAscent = g.getFontMetrics().getAscent();
 
-				msgX = getWidth() / 2 - msgWidth / 2;
-				msgY = getHeight() / 2 + msgAscent / 2;
+			msgX = getWidth() / 2 - msgWidth / 2;
+			msgY = getHeight() - tileLength / 2 + msgAscent / 2;
 
-				g.drawString(msg, msgX, msgY);
-
-				g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
-
-				msg = "All beasts have been caught";
-				msgWidth = g.getFontMetrics().stringWidth(msg);
-				msgAscent = g.getFontMetrics().getAscent();
-
-				msgX = getWidth() / 2 - msgWidth / 2;
-				msgY = getHeight() - tileLength / 2 + msgAscent / 2;
-
-				g.drawString(msg, msgX, msgY);
-			}
+			g.drawString(msg, msgX, msgY);
 		}
+	}
 
 	public static void run(Maze maze) {
 		// Run the GUI codes on the Event-Dispatching thread for thread safety

@@ -8,7 +8,7 @@ import java.util.Random;
 import Agents.SuperAgent;
 import Environment.Maze;
 import Environment.Maze.Movement;
-import jade.core.*;
+import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
@@ -29,7 +29,7 @@ public class PatrolBehaviour extends TickerBehaviour{
 		System.out.println("Stated Patrolling");
 		
 		int i = 0;
-		Iterator iterator = agent.getAgentRolls().iterator();
+		Iterator<Integer> iterator = agent.getAgentRolls().iterator();
 		while (iterator.hasNext()) {
 			if((int)iterator.next() == agent.getRolledValue()) break;
 		}

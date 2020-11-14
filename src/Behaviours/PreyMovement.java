@@ -12,6 +12,8 @@ import jade.core.behaviours.TickerBehaviour;
 
 public class PreyMovement extends TickerBehaviour {
 
+	private static final long serialVersionUID = 9093704759233114476L;
+	
 	private Prey agent;
 	/**
 	 * Keeps track of movements the prey should avoid to not run into hunters (for a

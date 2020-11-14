@@ -9,6 +9,8 @@ import jade.core.behaviours.TickerBehaviour;
 
 public class RandomMovement extends TickerBehaviour {
 
+	private static final long serialVersionUID = 2022402835198752817L;
+	
 	private Prey agent;
 
 	public RandomMovement(Agent a, long period) {
