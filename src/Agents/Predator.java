@@ -23,7 +23,7 @@ public class Predator extends Agent {
 	private static final long serialVersionUID = 1L;
 	private Behaviour patrolBehaviour = new PatrolBehaviour((Predator)this, 750);
 	private Behaviour startBehaviour = new StartBehaviour((Predator)this);
-	private Behaviour chaseBehaviour = new ChaseBehaviour((Predator)this, 750);
+	private Behaviour chaseBehaviour = new ChaseBehaviour((Predator)this, 750, 6);
 	private Behaviour listenerBehaviour = new ListenerBehaviour((Predator)this);
 	private Maze maze;
 	
