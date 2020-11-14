@@ -71,20 +71,25 @@ public class Astar {
 
 	public Astar(Graph g, Vertex initialVertex, Vertex finalVertex) {
 		this.graph = g;
-		setInitialVertex(initialVertex);
-		setFinalVertex(finalVertex);
-		this.openVertexes = new PriorityQueue<Vertex>(new Comparator<Vertex>() {
-			@Override
-			public int compare(Vertex v1, Vertex v2) {
-				return Integer.compare(info.get(v1).getFValue(), info.get(v2).getFValue());
-			}
-		});
-
-		info.get(initialVertex).setGValue(0);
-		info.get(initialVertex).setHValue(this.manhattanDistance(initialVertex, finalVertex));
-		info.get(initialVertex).updateFValue();
-	}
-
+        setInitialVertex(initialVertex);
+        setFinalVertex(finalVertex);
+        this.openVertexes = new PriorityQueue<Vertex>(new Comparator<Vertex>() {
+            @Override
+            public int compare(Vertex v1, Vertex v2) {
+                return Integer.compare(info.get(v1).getFValue(), info.get(v2).getFValue());
+            }
+        });
+        
+        int hValue = this.manhattanDistance(initialVertex, finalVertex);
+        int gValue = 0;
+        
+        VertexInfo vertInf = new VertexInfo(hValue, gValue, null);
+        
+        this.info = new HashMap<Vertex, VertexInfo>();
+        
+        info.put(initialVertex, vertInf);
+    }
+	
 	public void process() {
 		openVertexes.add(initialVertex);
 		Vertex current;
