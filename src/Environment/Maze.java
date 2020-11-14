@@ -550,4 +550,32 @@ public class Maze {
 
 		return str;
 	}
+
+	/**
+	 * Convertes a list of vertices (defining a path) to the list of movements necessary to take that path
+	 * @param path	List of vertices
+	 * @return		List of movements
+	 */
+	public static List<Movement> convertVertexPathToMovements(List<Vertex> path) {
+		ArrayList<Movement> movements = new ArrayList<Movement>();
+
+		for (int i = 1; i < path.size(); i++) {
+			Vertex point = path.get(i - 1);
+			Vertex nextPoint = path.get(i);
+
+			if (point.xCoordinate == nextPoint.xCoordinate && point.yCoordinate - 1 == nextPoint.yCoordinate) {
+				movements.add(Movement.Up);
+			} else if (point.xCoordinate == nextPoint.xCoordinate && point.yCoordinate + 1 == nextPoint.yCoordinate) {
+				movements.add(Movement.Down);
+			} else if(point.xCoordinate - 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
+				movements.add(Movement.Left);
+			} else if(point.xCoordinate + 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
+				movements.add(Movement.Right);
+			} else {
+				return null;
+			}
+		}
+
+		return movements;
+	}
 }

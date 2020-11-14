@@ -89,10 +89,6 @@ public class Astar {
 	public void process() {
 		openVertexes.add(initialVertex);
 		Vertex current;
-		
-		System.out.println("initial: " + initialVertex.xCoordinate + " " + initialVertex.yCoordinate);
-		
-		System.out.println("final: " + finalVertex.xCoordinate + " " + finalVertex.yCoordinate);
 
 		while (openVertexes.size() != 0) {
 			current = openVertexes.poll();
@@ -108,7 +104,6 @@ public class Astar {
 
 			for (int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
 				Vertex tmp = graph.getAdjVertexes(current).get(i);
-				System.out.println("Adjacent no " + i + ": " + tmp.xCoordinate + " " + tmp.yCoordinate);
 				if (!closedVertexes.contains(tmp)) {
 					int newGCost = info.get(current).getGValue() + 1;
 					int newHCost = this.manhattanDistance(tmp, finalVertex);
@@ -139,7 +134,6 @@ public class Astar {
 		while (info.get(v).getParent() != null) {
 			path.add(info.get(v).getParent());
 			v = info.get(v).getParent();
-			System.out.println("New Vertex: " + v.xCoordinate + " " + v.yCoordinate);
 		}
 
 		Collections.reverse(path);
