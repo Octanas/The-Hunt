@@ -38,17 +38,4 @@ public class Predator extends SuperAgent {
 		addBehaviour(getListenerBehaviour());
 	}
 
-	
-	
-
-
-
-
-
-
-
-
-
-	
-
 }
