@@ -105,7 +105,6 @@ public class Hunt {
 			observerController = container.createNewAgent("Observer", "Agents.Observer", null);
 			observerController.start();
 		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

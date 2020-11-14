@@ -10,6 +10,8 @@ import jade.lang.acl.ACLMessage;
 
 public class StartBehaviour extends SimpleBehaviour{
 	
+	private static final long serialVersionUID = -4686593423981411760L;
+
 	private SuperAgent agent;
 
 	private boolean done;

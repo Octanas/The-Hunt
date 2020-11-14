@@ -17,7 +17,6 @@ public class ListenerBehaviour extends CyclicBehaviour {
 
 	public ListenerBehaviour(Agent a) {
 		agent = (SuperAgent) a;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -30,6 +29,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 			analyseMessage(message);
 		}
 
+		if(agent.getMaze() != null && agent.getMaze().isOver())
+			agent.removeCurrentBehaviour();
 	}
 
 	private void analyseMessage(ACLMessage message) {
