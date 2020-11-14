@@ -11,3 +11,7 @@ To test if JADE is working, open its GUI:
 ```
 java -cp lib/jade.jar jade.Boot -gui
 ```
+
+## Running
+
+The program accepts the number of hunters as a parameter. If ommitted, the default value is 4.

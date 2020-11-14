@@ -17,6 +17,18 @@ public class Hunt {
 
 	public static void main(String[] args) {
 
+		int numHunters = 4;
+		int numPrey = 1;
+
+		if(args.length >= 1) {
+			try {
+				numHunters = Integer.parseInt(args[0]);
+			} catch(NumberFormatException ex) {
+				System.out.println("Invalid number of hunters, terminating");
+				return;
+			}
+		}
+
 		// Start JADE
 		runt = Runtime.instance();
 		profile = new ProfileImpl();
@@ -30,8 +42,10 @@ public class Hunt {
 		// Add agents
 		AgentContainer mainContainer = runt.createMainContainer(profile);
 
-		addPredators(mainContainer, 4);
-		addPreys(mainContainer, 1);
+		System.out.println("Starting with " + numHunters + (numHunters == 1 ? " hunter and " : " hunters and ") + numPrey + " prey");
+
+		addPredators(mainContainer, numHunters);
+		addPreys(mainContainer, numPrey);
 
 		System.out.println("Agents created...");
 
