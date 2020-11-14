@@ -1,36 +1,32 @@
 package Behaviours;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import Agents.Predator;
-import Agents.Prey;
+import Agents.SuperAgent;
 import Environment.Maze;
 import Environment.Maze.Movement;
 import jade.core.*;
 import jade.core.behaviours.TickerBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 public class PatrolBehaviour extends TickerBehaviour{
 	
-	private Predator agent;
+	private SuperAgent agent;
 
 	public PatrolBehaviour(Agent a, long period) {
 		super(a, period);
-		agent = (Predator) a;
+		agent = (SuperAgent) a;
 		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
 	public void onStart() {
+
+		System.out.println("Stated Patrolling");
 		
 		int i = 0;
 		Iterator iterator = agent.getAgentRolls().iterator();
@@ -64,6 +60,8 @@ public class PatrolBehaviour extends TickerBehaviour{
 	
 	@Override
 	protected void onTick() {
+
+		System.out.println("Patrolling");
 	        
 		Maze maze = agent.getMaze();
 		Maze.MazeEntity self = maze.getEntities().get(agent.getName());

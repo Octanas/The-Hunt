@@ -6,7 +6,6 @@ import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
-import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
 public class Hunt {
@@ -31,26 +30,17 @@ public class Hunt {
         //Add agents
         AgentContainer mainContainer = runt.createMainContainer(profile);
         
-        // TODO adicionar maze como agente
         addPredators(mainContainer, 4);
-        addPreys(mainContainer, 1);
+		addPreys(mainContainer, 1);
+		addObserver(mainContainer);
+		
         
         System.out.println("Agents created...");
 
-        System.out.println("Container Running....");
-        
-	}
-	
-	public static void createEnvironment(AgentContainer container) {
-			
-		try {
-			AgentController mazeController = container.createNewAgent("Maze", "Environment.Maze", null);
-			mazeController.start();
-		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println("Container Running....");
 		
+
+        
 	}
 	
 	public static void addPredators(AgentContainer container, int n) {
@@ -86,5 +76,18 @@ public class Hunt {
 		
 	}
 	
+	public static void addObserver(AgentContainer container) {
+		
+		AgentController observerController;
+		
+		try {
+			observerController = container.createNewAgent("Observer", "Agents.Observer", null);
+			observerController.start();
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

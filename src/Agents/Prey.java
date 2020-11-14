@@ -12,10 +12,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class Prey extends Agent{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private Maze maze;
 
 	protected void setup() {

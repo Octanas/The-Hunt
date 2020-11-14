@@ -2,22 +2,18 @@ package Behaviours;
 
 import java.util.Random;
 
-import Agents.Predator;
-import Agents.Prey;
+import Agents.SuperAgent;
 import jade.core.*;
 import jade.core.behaviours.SimpleBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
 public class StartBehaviour extends SimpleBehaviour{
 	
-	private Predator agent;
+	private SuperAgent agent;
 
 	public StartBehaviour(Agent a) {
-		agent = (Predator) a;
+		agent = (SuperAgent) a;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,25 +21,25 @@ public class StartBehaviour extends SimpleBehaviour{
 	public void action() {
 	        
 		// create instance of Random class 
-        Random rand = new Random(); 
-  
-        // Generate random integers in range 0 to 999 
-        int rand_int1 = rand.nextInt(1000); 
-  
-        // Associate rand with agent 
+        Random rand = new Random();
+		
+        // Generate random integers in range 0 to 999
+        int rand_int1 = rand.nextInt(1000);
+	
+        // Associate rand with agent
         agent.setRolledValue(rand_int1);
         
         // Send info to other Predators
-        DFAgentDescription[] predators = agent.getPredators();
+        DFAgentDescription[] observers = agent.getObservers();
         
-        String message = "Roll " + String.valueOf(agent.getRolledValue());
+		String message = "Roll " + String.valueOf(agent.getRolledValue());
         
-        for(int i = 0; i < predators.length; i++) {
-        	agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
+        for(int i = 0; i < observers.length; i++) {
+			agent.sendMessageTo(observers[i].getName(), ACLMessage.INFORM, message);
         }
         
         
-	        
+	    
 	}
 	
 	public int onEnd() {
