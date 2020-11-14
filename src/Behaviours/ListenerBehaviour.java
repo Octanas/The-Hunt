@@ -69,7 +69,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 					case "Prey":
 						agent.setPreyX(Integer.parseInt(messageArray[1]));
 						agent.setPreyY(Integer.parseInt(messageArray[2]));
-						agent.addBehaviour(agent.getChaseBehaviour());
+						agent.removeCurrentBehaviour();
+						agent.setCurrentBehaviour(agent.getChaseBehaviour());
 						break;
 					case "Reroll":
 						// Roll a new random value
@@ -87,8 +88,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						for (int i = 1; i < messageArray.length; i++) {
 							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
 						}
-						agent.removeBehaviour(agent.getStartBehaviour());
-						agent.addBehaviour(agent.getPatrolBehaviour());
+						agent.removeCurrentBehaviour();
+						agent.setCurrentBehaviour(agent.getPatrolBehaviour());
 						break;
 					default:
 						break;

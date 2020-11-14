@@ -34,7 +34,7 @@ public class Predator extends SuperAgent {
 		getMaze().registerEntity(getName(), true);		
 		
 		// Adding initial behaviours
-		addBehaviour(getStartBehaviour());
+		setCurrentBehaviour(getStartBehaviour());
 		addBehaviour(getListenerBehaviour());
 	}
 

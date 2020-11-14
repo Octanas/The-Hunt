@@ -8,6 +8,8 @@ import Environment.Maze;
 import Environment.Vertex;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.lang.acl.ACLMessage;
 
 public class ChaseBehaviour extends TickerBehaviour {
 
@@ -35,6 +37,8 @@ public class ChaseBehaviour extends TickerBehaviour {
 
 		previousPreyX = -1;
 		previousPreyY = -1;
+
+		System.out.println("Agent " + agent.getLocalName() + ": Starting chase!");
 	}
 
 	@Override
@@ -42,13 +46,20 @@ public class ChaseBehaviour extends TickerBehaviour {
 		Maze maze = agent.getMaze();
 		Maze.MazeEntity self = maze.getEntities().get(agent.getName());
 
-		// No updates in a long time, giving up
-		if (ticksWithoutUpdate >= ticksToGiveUp) {
-			System.out.println("Agent " + agent.getName() + ": Giving up on chase");
+		// Verify is prey is in vision
+		Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
+		// If yes send info to other hunters
+		if (visibleEntity != null && !visibleEntity.isHunter && !visibleEntity.isCaught()) {
 
-			agent.addBehaviour(new PatrolBehaviour(agent, 750));
-			stop();
-			return;
+			DFAgentDescription[] predators = agent.getPredators();
+			String message = "Prey " + String.valueOf(visibleEntity.getXCoordinate()) + " "
+					+ String.valueOf(visibleEntity.getYCoordinate());
+
+			for (int i = 0; i < predators.length; i++) {
+				agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
+			}
+			agent.setPreyX(visibleEntity.getXCoordinate());
+			agent.setPreyY(visibleEntity.getYCoordinate());
 		}
 
 		// New position for prey was communicated, so get a new path
@@ -57,6 +68,15 @@ public class ChaseBehaviour extends TickerBehaviour {
 			ticksWithoutUpdate = 0;
 		} else {
 			ticksWithoutUpdate++;
+		}
+
+		// No updates in a long time, giving up
+		if (ticksWithoutUpdate >= ticksToGiveUp) {
+			System.out.println("Agent " + agent.getLocalName() + ": Giving up on chase");
+
+			agent.removeCurrentBehaviour();
+			agent.setCurrentBehaviour(agent.getPatrolBehaviour());
+			return;
 		}
 
 		// movementsToTake is null, so it's should get new path to follow
@@ -68,22 +88,23 @@ public class ChaseBehaviour extends TickerBehaviour {
 
 			Astar astar = new Astar(maze.getGraph(), init, prey);
 			int proc = astar.process();
-			if(proc != 0) {
+
+			if (proc == 0) {
+				List<Vertex> path = astar.getPath();
+
+				movementsToTake = Maze.convertVertexPathToMovements(path);
+			} else {
 				if (proc == 1) {
 					System.out.println("Unreachable Vertex...");
-					return;
-				}
-				else if (proc == 2) {
+				} else if (proc == 2) {
 					System.out.println("Error...");
-					return;
 				}
-			}
-			List<Vertex> path = astar.getPath();
 
-			movementsToTake = Maze.convertVertexPathToMovements(path);
+				movementsToTake = null;
+			}
 
 			if (movementsToTake == null) {
-				System.out.println("Agent " + agent.getName() + ": Something is wrong, path is invalid");
+				System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path is invalid");
 			}
 		}
 
@@ -94,7 +115,7 @@ public class ChaseBehaviour extends TickerBehaviour {
 				if (success) {
 					movementsToTake.remove(0);
 				} else {
-					System.out.println("Agent " + agent.getName() + ": Something is wrong, path does not work");
+					System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
 
 					// Path does not work, so a new path should be calculated
 					movementsToTake = null;
@@ -102,7 +123,7 @@ public class ChaseBehaviour extends TickerBehaviour {
 			}
 
 			// Every move has been made, get new path
-			if (movementsToTake.isEmpty())
+			if (movementsToTake != null && movementsToTake.isEmpty())
 				movementsToTake = null;
 		}
 	}

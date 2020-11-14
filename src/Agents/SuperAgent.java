@@ -9,6 +9,7 @@ import Behaviours.StartBehaviour;
 import Environment.Maze;
 import jade.core.*;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -17,11 +18,11 @@ import jade.lang.acl.ACLMessage;
 
 public class SuperAgent extends Agent {
 
-    private Behaviour patrolBehaviour = new PatrolBehaviour(this, 750);
-	private Behaviour startBehaviour = new StartBehaviour(this);
-	private Behaviour chaseBehaviour = new ChaseBehaviour(this, 750, 6);
-    private Behaviour listenerBehaviour = new ListenerBehaviour(this);
-    
+	int agentSpeed = 750;
+	int ticksToGiveUpChase = 6;
+
+	Behaviour currentBehaviour;
+ 
     private TreeSet<Integer> agentRolls;
     private int rolledValue;
 	private int biasX;
@@ -34,8 +35,8 @@ public class SuperAgent extends Agent {
     protected void setup() {
 
         // Initialize agent rolls 
-        agentRolls = new TreeSet<Integer>();
-
+		agentRolls = new TreeSet<Integer>();
+		currentBehaviour = null;
 	}
     
 
@@ -88,40 +89,23 @@ public class SuperAgent extends Agent {
 		return result;
 		
     }
-    
-    public void removeBehaviour(String behaviour){
-		
-		switch (behaviour) {
-			case "start": 
-				this.removeBehaviour(startBehaviour);
-				return;
-			case "patrol": 
-				this.removeBehaviour(patrolBehaviour);
-				return;
-			case "chase": 
-				this.removeBehaviour(chaseBehaviour);
-				return;
-			default: return;
-		}
-		
-	}
-	
+
     // Getters
 
     public Behaviour getStartBehaviour() {
-		return startBehaviour;
+		return new StartBehaviour(this);
 	}
 
 	public Behaviour getListenerBehaviour() {
-		return listenerBehaviour;
+		return new ListenerBehaviour(this);
 	}
 	
 	public Behaviour getPatrolBehaviour() {
-		return patrolBehaviour;
+		return new PatrolBehaviour(this, agentSpeed);
 	}
 	
 	public Behaviour getChaseBehaviour() {
-		return chaseBehaviour;
+		return new ChaseBehaviour(this, agentSpeed, ticksToGiveUpChase);
 	}
     
     public TreeSet<Integer> getAgentRolls(){
@@ -152,7 +136,22 @@ public class SuperAgent extends Agent {
 		return preyY;
     }
     
-    // Setters
+	// Setters
+
+	public void removeCurrentBehaviour() {
+		if(currentBehaviour instanceof TickerBehaviour) {
+			System.out.println(this.getName());
+			((TickerBehaviour) currentBehaviour).stop();
+		}
+
+		this.removeBehaviour(currentBehaviour);
+		currentBehaviour = null;
+	}
+	
+	public void setCurrentBehaviour(Behaviour behaviour) {
+		currentBehaviour = behaviour;
+		this.addBehaviour(behaviour);
+	}
 
     public void addAgentRoll(int agentRoll) {
 		this.agentRolls.add(agentRoll);

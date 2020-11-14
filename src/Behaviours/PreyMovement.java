@@ -14,6 +14,8 @@ public class PreyMovement extends TickerBehaviour {
 
 	private static final long serialVersionUID = 9093704759233114476L;
 	
+	private int ticksToAvoid = 3;
+
 	private Prey agent;
 	/**
 	 * Keeps track of movements the prey should avoid to not run into hunters (for a
@@ -49,16 +51,16 @@ public class PreyMovement extends TickerBehaviour {
 				Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
 
 				// If there is a visible hunter, mark the movement in the direction it was seen
-				// to be avoided for 5 ticks
+				// to be avoided for ticksToAvoid ticks
 				if (visibleEntity != null && visibleEntity.isHunter) {
 					if (direction.equals(Maze.Direction.North)) {
-						movementsToAvoid.put(Maze.Movement.Up, 5);
+						movementsToAvoid.put(Maze.Movement.Up, ticksToAvoid);
 					} else if (direction.equals(Maze.Direction.South)) {
-						movementsToAvoid.put(Maze.Movement.Down, 5);
+						movementsToAvoid.put(Maze.Movement.Down, ticksToAvoid);
 					} else if (direction.equals(Maze.Direction.East)) {
-						movementsToAvoid.put(Maze.Movement.Right, 5);
+						movementsToAvoid.put(Maze.Movement.Right, ticksToAvoid);
 					} else if (direction.equals(Maze.Direction.West)) {
-						movementsToAvoid.put(Maze.Movement.Left, 5);
+						movementsToAvoid.put(Maze.Movement.Left, ticksToAvoid);
 					}
 				}
 
