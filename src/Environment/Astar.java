@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class Astar {
 	class VertexInfo {
@@ -13,7 +15,6 @@ public class Astar {
 		private int gValue;
 		private int fValue;
 		private Vertex parent;
-		private boolean closed = false;
 
 		public VertexInfo(int h, int g, Vertex p) {
 			this.hValue = h;
@@ -53,14 +54,6 @@ public class Astar {
 		public Vertex getParent() {
 			return this.parent;
 		}
-
-		public boolean isClosed() {
-			return this.closed;
-		}
-
-		public void close() {
-			this.closed = true;
-		}
 	}
 
 	private Graph graph;
@@ -68,6 +61,7 @@ public class Astar {
 	private Vertex initialVertex;
 	private Vertex finalVertex;
 	private HashMap<Vertex, VertexInfo> info;
+	private Set<Vertex> closedVertexes;
 
 	public Astar(Graph g, Vertex initialVertex, Vertex finalVertex) {
 		this.graph = g;
@@ -88,11 +82,17 @@ public class Astar {
         this.info = new HashMap<Vertex, VertexInfo>();
         
         info.put(initialVertex, vertInf);
+        
+        this.closedVertexes = new HashSet<Vertex>();
     }
 	
 	public void process() {
 		openVertexes.add(initialVertex);
 		Vertex current;
+		
+		System.out.println("initial: " + initialVertex.xCoordinate + " " + initialVertex.yCoordinate);
+		
+		System.out.println("final: " + finalVertex.xCoordinate + " " + finalVertex.yCoordinate);
 
 		while (openVertexes.size() != 0) {
 			current = openVertexes.poll();
@@ -100,14 +100,16 @@ public class Astar {
 			if (current == null)
 				break;
 
-			info.get(current).close();
+			closedVertexes.add(current);
 
-			if (current.equals(finalVertex))
+			if (current.equals(finalVertex)) {
 				return;
+			}
 
 			for (int i = 0; i < graph.getAdjVertexes(current).size(); i++) {
 				Vertex tmp = graph.getAdjVertexes(current).get(i);
-				if (!info.get(tmp).isClosed()) {
+				System.out.println("Adjacent no " + i + ": " + tmp.xCoordinate + " " + tmp.yCoordinate);
+				if (!closedVertexes.contains(tmp)) {
 					int newGCost = info.get(current).getGValue() + 1;
 					int newHCost = this.manhattanDistance(tmp, finalVertex);
 					int newFinalCost = newHCost + newGCost;
@@ -127,6 +129,7 @@ public class Astar {
 				}
 			}
 		}
+		
 	}
 
 	public List<Vertex> getPath() {
@@ -136,6 +139,7 @@ public class Astar {
 		while (info.get(v).getParent() != null) {
 			path.add(info.get(v).getParent());
 			v = info.get(v).getParent();
+			System.out.println("New Vertex: " + v.xCoordinate + " " + v.yCoordinate);
 		}
 
 		Collections.reverse(path);
