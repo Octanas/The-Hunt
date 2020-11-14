@@ -72,7 +72,7 @@ public class PatrolBehaviour extends TickerBehaviour{
 		
 		List<Movement> possibleMovements = maze.possibleMovements(self.getXCoordinate(), self.getYCoordinate());
 		
-		if(possibleMovements.size() < 3){
+		if(possibleMovements.size() == 2){
 			for(Movement movement : possibleMovements){
 				if(!(self.getDirection().equals(Maze.Direction.North) && movement.equals(Maze.Movement.Down)
             	|| self.getDirection().equals(Maze.Direction.South) && movement.equals(Maze.Movement.Up)
