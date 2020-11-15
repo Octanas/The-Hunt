@@ -5,6 +5,7 @@ import java.util.TreeSet;
 import Behaviours.ChaseBehaviour;
 import Behaviours.GoToBehaviour;
 import Behaviours.ListenerBehaviour;
+import Behaviours.LookForPreyBehaviour;
 import Behaviours.PatrolBehaviour;
 import Behaviours.SightBehaviour;
 import Behaviours.StartBehaviour;
@@ -22,8 +23,9 @@ public class SuperAgent extends Agent {
 
 	private static final long serialVersionUID = 5638702743371270570L;
 
-	int agentSpeed = 750;
-	int ticksToGiveUpChase = 6;
+	private int agentSpeed = 750;
+	private int ticksToGiveUpChase = 6;
+	private int ticksToStopLooking = 5;
 
 	Behaviour currentBehaviour;
 
@@ -121,6 +123,10 @@ public class SuperAgent extends Agent {
 
 	public Behaviour getChaseBehaviour() {
 		return new ChaseBehaviour(this, agentSpeed, ticksToGiveUpChase);
+	}
+
+	public Behaviour getLookForPreyBehaviour() {
+		return new LookForPreyBehaviour(this, agentSpeed, ticksToStopLooking);
 	}
 
 	public TreeSet<Integer> getAgentRolls() {

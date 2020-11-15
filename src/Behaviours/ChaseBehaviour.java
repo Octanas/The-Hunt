@@ -124,6 +124,8 @@ public class ChaseBehaviour extends TickerBehaviour {
 			// Every move has been made, get new path
 			if (movementsToTake != null && movementsToTake.isEmpty())
 				movementsToTake = null;
+				agent.removeCurrentBehaviour();
+				agent.setCurrentBehaviour(agent.getLookForPreyBehaviour());
 		}
 	}
 
