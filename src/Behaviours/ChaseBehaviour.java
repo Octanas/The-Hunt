@@ -46,7 +46,7 @@ public class ChaseBehaviour extends TickerBehaviour {
 		if (ticksWithoutUpdate >= ticksToGiveUp) {
 			System.out.println("Agent " + agent.getName() + ": Giving up on chase");
 
-			agent.addBehaviour(new PatrolBehaviour(agent, 750));
+			agent.addBehaviour(agent.getPatrolBehaviour());
 			stop();
 			return;
 		}
