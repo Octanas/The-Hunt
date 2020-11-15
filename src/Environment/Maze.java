@@ -31,6 +31,7 @@ public class Maze {
 		public boolean isHunter;
 		private boolean caught;
 		private boolean alert;
+		private boolean looking;
 
 		public MazeEntity(boolean isHunter, int xCoordinate, int yCoordinate, Direction direction) {
 			this.isHunter = isHunter;
@@ -39,6 +40,7 @@ public class Maze {
 			this.direction = direction;
 			this.caught = false;
 			this.alert = false;
+			this.looking = false;
 		}
 
 		public Direction getDirection() {
@@ -80,6 +82,19 @@ public class Maze {
 
 		public boolean isAlert() {
 			return alert;
+		}
+
+		public boolean setLooking(boolean looking) {
+			if (!isHunter)
+				return false;
+
+			this.looking = looking;
+
+			return true;
+		}
+
+		public boolean isLooking() {
+			return isHunter && looking;
 		}
 
 		public MazeEntity clone() {

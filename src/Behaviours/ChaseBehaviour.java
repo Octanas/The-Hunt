@@ -37,8 +37,10 @@ public class ChaseBehaviour extends TickerBehaviour {
 		previousPreyY = -1;
 
 		// Sets entity as in alert
-		if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
+		if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null) {
+			agent.getMaze().getEntities().get(agent.getName()).setLooking(false);
 			agent.getMaze().getEntities().get(agent.getName()).setAlert(true);
+		}
 
 		System.out.println("Agent " + agent.getLocalName() + ": Starting chase!");
 	}
@@ -122,10 +124,12 @@ public class ChaseBehaviour extends TickerBehaviour {
 			}
 
 			// Every move has been made, get new path
-			if (movementsToTake != null && movementsToTake.isEmpty())
+			if (movementsToTake != null && movementsToTake.isEmpty()) {
 				movementsToTake = null;
+
 				agent.removeCurrentBehaviour();
 				agent.setCurrentBehaviour(agent.getLookForPreyBehaviour());
+			}
 		}
 	}
 
