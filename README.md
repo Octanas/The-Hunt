@@ -3,13 +3,22 @@ The Hunt is a Pac-Man inspired Distributed Artificial Intelligence project built
 
 The hunters are tasked with catching the beast, who is quicker than them. So they'll have to outsmart it by working together and trapping it.
 
-## Compiling
+## Dependencies
+
 The JADE jar file is already [included in the repository](lib/) and in the classpath, so the project can be compiled and executed normally.
 
 To test if JADE is working, open its GUI:
 
 ```
 java -cp lib/jade.jar jade.Boot -gui
+```
+
+## Compiling
+
+To compile the project through the command line, run the following command:
+
+```
+javac -d "bin" -cp "lib/jade.jar;src" .\src\Agents\*.java .\src\Behaviours\*.java .\src\Client\*.java .\src\Environment\*.java
 ```
 
 ## Running
