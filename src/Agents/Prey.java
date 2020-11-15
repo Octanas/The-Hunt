@@ -3,7 +3,6 @@ package Agents;
 import java.util.HashMap;
 
 import Behaviours.PreyMovement;
-import Behaviours.RandomMovement;
 import Behaviours.SightBehaviour;
 import Environment.Maze;
 import jade.core.*;
