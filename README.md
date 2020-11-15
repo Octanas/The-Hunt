@@ -14,4 +14,23 @@ java -cp lib/jade.jar jade.Boot -gui
 
 ## Running
 
-The program accepts the number of hunters as a parameter. If ommitted, the default value is 4.
+To run the project, run the following command:
+
+```
+java -cp "lib/jade.jar;bin" Client/Hunt
+```
+
+The program accepts the following parameters (the order must be the same):
+* Number of hunters (default = 4)
+* Number of prey (default = 1)
+* If the prey start at a fixed location ("true" or "false", default = false)
+
+The following example runs the project with 3 hunters and 2 prey, with the prey starting in a fixed location (not a random location):
+
+```
+java -cp "lib/jade.jar;bin" Client/Hunt 3 2 true
+```
+
+## Trials
+
+We did some trials to see and compare the results of the program with different parameters, they can be found in the [tests.txt](tests.txt) file.
