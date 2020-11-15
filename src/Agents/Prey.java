@@ -46,8 +46,12 @@ public class Prey extends Agent {
 		// Retrieve arguments
 		Object[] args = getArguments();
 		maze = (Maze) args[0];
+		boolean fixedPrey = (boolean) args[1];
 
-		maze.registerEntity(getName(), false);
+		if (fixedPrey)
+			maze.registerEntity(getName(), false, 9, 16);
+		else
+			maze.registerEntity(getName(), false);
 
 		try {
 			DFService.register(this, agentDescription);

@@ -35,6 +35,10 @@ public class ListenerBehaviour extends CyclicBehaviour {
 			// Take entity off alert
 			if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
 				agent.getMaze().getEntities().get(agent.getName()).setAlert(false);
+
+			// Put entity as not looking
+			if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
+				agent.getMaze().getEntities().get(agent.getName()).setLooking(false);
 		}
 
 	}

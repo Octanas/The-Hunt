@@ -52,6 +52,9 @@ public class VisualizerWindow extends JPanel {
 			new int[] { 35, 40, 25, 40, 35, 20, 5, 0, 15, 0, 5, 20 }, 12);
 	Shape alertShape1 = new Polygon(new int[] { 5, 6, 7, 5, 3, 4 }, new int[] { 15, 14, 3, 1, 3, 14 }, 6);
 	Shape alertShape2 = new Ellipse2D.Double(3, 17, 4, 4);
+	Shape lookingShape1 = new Polygon(new int[] { 5, 6, 6, 8, 8, 6, 4, 2, 2, 3, 3, 4, 7, 7, 4, 4 },
+			new int[] { 15, 14, 10, 8, 6, 4, 4, 5, 7, 6, 6, 6, 6, 8, 10, 14 }, 16);
+	Shape lookingShape2 = new Ellipse2D.Double(4, 18, 3, 3);
 
 	// Center in 0, 0
 	Shape directionIndicator = new Polygon(new int[] { -8, 8, 0 }, new int[] { -12, -12, -18 }, 3);
@@ -236,6 +239,23 @@ public class VisualizerWindow extends JPanel {
 
 				g2d.fill(alertShape1);
 				g2d.fill(alertShape2);
+
+				g2d.setTransform(saveTransform);
+				g2d.setTransform(identity);
+			}
+
+			// Draw looking marker
+			if (entity.isLooking()) {
+				g2d.setColor(Color.ORANGE);
+
+				g2d.translate(currentXTranslation, currentYTranslation);
+
+				if (entity.getDirection().equals(Direction.West)) {
+					g2d.translate(2 * tileLength / 3, 0);
+				}
+
+				g2d.fill(lookingShape1);
+				g2d.fill(lookingShape2);
 
 				g2d.setTransform(saveTransform);
 				g2d.setTransform(identity);
