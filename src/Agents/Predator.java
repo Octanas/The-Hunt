@@ -8,6 +8,8 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class Predator extends SuperAgent {
 
+	private static final long serialVersionUID = -8218305308654229995L;
+
 	protected void setup() {
 		super.setup();
 
@@ -34,8 +36,9 @@ public class Predator extends SuperAgent {
 		getMaze().registerEntity(getName(), true);		
 		
 		// Adding initial behaviours
-		addBehaviour(getStartBehaviour());
+		setCurrentBehaviour(getStartBehaviour());
 		addBehaviour(getListenerBehaviour());
+		addBehaviour(getSightBehaviour());
 	}
 
 }

@@ -2,41 +2,31 @@ package Behaviours;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 import Agents.Prey;
 import Environment.Maze;
-import jade.core.*;
+import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 
 public class PreyMovement extends TickerBehaviour {
 
 	private static final long serialVersionUID = 9093704759233114476L;
-	
+
 	private Prey agent;
-	/**
-	 * Keeps track of movements the prey should avoid to not run into hunters (for a
-	 * short period of time).
-	 * 
-	 * The Integer represents the number of ticks that a movement should be avoided.
-	 * It decreases for each tick.
-	 */
-	private HashMap<Maze.Movement, Integer> movementsToAvoid;
 
 	public PreyMovement(Agent a, long period) {
 		super(a, period);
 		agent = (Prey) a;
-		movementsToAvoid = new HashMap<Maze.Movement, Integer>();
 
 		// Adds all the possible movements to the movementsToAvoid HashMap
 		for (Maze.Movement movement : Maze.Movement.values()) {
-			movementsToAvoid.put(movement, 0);
+			agent.getMovementsToAvoid().put(movement, 0);
 		}
 	}
 
 	@Override
-	protected void onTick() {	
+	protected void onTick() {
 		Maze maze = agent.getMaze();
 
 		if (maze != null) {
@@ -46,21 +36,6 @@ public class PreyMovement extends TickerBehaviour {
 
 			if (!self.isCaught()) {
 				Maze.Direction direction = self.getDirection();
-				Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
-
-				// If there is a visible hunter, mark the movement in the direction it was seen
-				// to be avoided for 5 ticks
-				if (visibleEntity != null && visibleEntity.isHunter) {
-					if (direction.equals(Maze.Direction.North)) {
-						movementsToAvoid.put(Maze.Movement.Up, 5);
-					} else if (direction.equals(Maze.Direction.South)) {
-						movementsToAvoid.put(Maze.Movement.Down, 5);
-					} else if (direction.equals(Maze.Direction.East)) {
-						movementsToAvoid.put(Maze.Movement.Right, 5);
-					} else if (direction.equals(Maze.Direction.West)) {
-						movementsToAvoid.put(Maze.Movement.Left, 5);
-					}
-				}
 
 				// Get list with all the possible movements
 				ArrayList<Maze.Movement> possibleMovements = new ArrayList<Maze.Movement>(
@@ -75,10 +50,10 @@ public class PreyMovement extends TickerBehaviour {
 				// the same number of ticks that it should be avoided
 				for (int i = 0; i < possibleMovements.size() - 1; i++) {
 					for (int j = 0; j < possibleMovements.size() - i - 1; j++) {
-						if (movementsToAvoid.get(possibleMovements.get(j)) > movementsToAvoid
+						if (agent.getMovementsToAvoid().get(possibleMovements.get(j)) > agent.getMovementsToAvoid()
 								.get(possibleMovements.get(j + 1))
-								|| movementsToAvoid.get(possibleMovements.get(j)) == movementsToAvoid
-										.get(possibleMovements.get(j + 1))
+								|| agent.getMovementsToAvoid().get(possibleMovements.get(j)) == agent
+										.getMovementsToAvoid().get(possibleMovements.get(j + 1))
 										&& (direction.equals(Maze.Direction.North)
 												&& possibleMovements.get(j).equals(Maze.Movement.Down)
 												|| direction.equals(Maze.Direction.South)
@@ -109,13 +84,24 @@ public class PreyMovement extends TickerBehaviour {
 				while (!maze.moveEntity(agent.getName(), possibleMovements.get(i)) && i != possibleMovements.size())
 					i++;
 
+				// If not all ticks are at 0, the prey is in alert
+				boolean inAlert = false;
+
 				// Decrease a tick from each movement (the ones at 0 stay at 0)
-				for (Maze.Movement movement : movementsToAvoid.keySet()) {
-					movementsToAvoid.put(movement, Math.max(0, movementsToAvoid.get(movement) - 1));
+				for (Maze.Movement movement : agent.getMovementsToAvoid().keySet()) {
+					int currTick = agent.getMovementsToAvoid().get(movement);
+
+					if (currTick != 0) {
+						agent.getMovementsToAvoid().put(movement, agent.getMovementsToAvoid().get(movement) - 1);
+
+						inAlert = true;
+					}
 				}
-			}
-			else {
-				stop();	// Ticker Behaviour will stop repeating
+
+				// Toggle alert for entity
+				self.setAlert(inAlert);
+			} else {
+				stop(); // Ticker Behaviour will stop repeating
 			}
 		}
 	}

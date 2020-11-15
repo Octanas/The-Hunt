@@ -17,7 +17,6 @@ public class ListenerBehaviour extends CyclicBehaviour {
 
 	public ListenerBehaviour(Agent a) {
 		agent = (SuperAgent) a;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -28,6 +27,14 @@ public class ListenerBehaviour extends CyclicBehaviour {
 
 		if (message != null) {
 			analyseMessage(message);
+		}
+
+		if (agent.getMaze() != null && agent.getMaze().isOver()) {
+			agent.removeCurrentBehaviour();
+
+			// Take entity off alert
+			if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
+				agent.getMaze().getEntities().get(agent.getName()).setAlert(false);
 		}
 
 	}
@@ -50,13 +57,14 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						} else {
 							agent.addAgentRoll(Integer.parseInt(messageArray[1]));
 						}
-						if (agent.getAgentRolls().size() == 4) {
+
+						if (agent.getAgentRolls().size() == agent.getPredators().length) {
 							// Send info to Predators
 							DFAgentDescription[] predators = agent.getPredators();
 
 							String patrolMessage = "Patrol";
 
-							Iterator iterator = agent.getAgentRolls().iterator();
+							Iterator<Integer> iterator = agent.getAgentRolls().iterator();
 							while (iterator.hasNext()) {
 								patrolMessage += " " + iterator.next();
 							}
@@ -69,7 +77,12 @@ public class ListenerBehaviour extends CyclicBehaviour {
 					case "Prey":
 						agent.setPreyX(Integer.parseInt(messageArray[1]));
 						agent.setPreyY(Integer.parseInt(messageArray[2]));
-						agent.addBehaviour(agent.getChaseBehaviour());
+
+						if (!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
+							agent.removeCurrentBehaviour();
+							agent.setCurrentBehaviour(agent.getChaseBehaviour());
+						}
+
 						break;
 					case "Reroll":
 						// Roll a new random value
@@ -87,8 +100,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						for (int i = 1; i < messageArray.length; i++) {
 							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
 						}
-						agent.removeBehaviour(agent.getStartBehaviour());
-						agent.addBehaviour(agent.getPatrolBehaviour());
+						agent.removeCurrentBehaviour();
+						agent.setCurrentBehaviour(agent.getGoToBehaviour());
 						break;
 					default:
 						break;

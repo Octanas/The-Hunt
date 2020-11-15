@@ -35,6 +35,12 @@ public class ChaseBehaviour extends TickerBehaviour {
 
 		previousPreyX = -1;
 		previousPreyY = -1;
+
+		// Sets entity as in alert
+		if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
+			agent.getMaze().getEntities().get(agent.getName()).setAlert(true);
+
+		System.out.println("Agent " + agent.getLocalName() + ": Starting chase!");
 	}
 
 	@Override
@@ -59,6 +65,19 @@ public class ChaseBehaviour extends TickerBehaviour {
 			ticksWithoutUpdate++;
 		}
 
+		// No updates in a long time, giving up
+		if (ticksWithoutUpdate >= ticksToGiveUp) {
+			System.out.println("Agent " + agent.getLocalName() + ": Giving up on chase");
+
+			agent.removeCurrentBehaviour();
+			agent.setCurrentBehaviour(agent.getPatrolBehaviour());
+
+			// Sets entity as not in alert
+			self.setAlert(false);
+
+			return;
+		}
+
 		// movementsToTake is null, so it's should get new path to follow
 		if (movementsToTake == null) {
 			Vertex init = new Vertex(self.getXCoordinate(), self.getYCoordinate());
@@ -68,22 +87,23 @@ public class ChaseBehaviour extends TickerBehaviour {
 
 			Astar astar = new Astar(maze.getGraph(), init, prey);
 			int proc = astar.process();
-			if(proc != 0) {
+
+			if (proc == 0) {
+				List<Vertex> path = astar.getPath();
+
+				movementsToTake = Maze.convertVertexPathToMovements(path);
+			} else {
 				if (proc == 1) {
 					System.out.println("Unreachable Vertex...");
-					return;
-				}
-				else if (proc == 2) {
+				} else if (proc == 2) {
 					System.out.println("Error...");
-					return;
 				}
-			}
-			List<Vertex> path = astar.getPath();
 
-			movementsToTake = Maze.convertVertexPathToMovements(path);
+				movementsToTake = null;
+			}
 
 			if (movementsToTake == null) {
-				System.out.println("Agent " + agent.getName() + ": Something is wrong, path is invalid");
+				System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path is invalid");
 			}
 		}
 
@@ -94,7 +114,7 @@ public class ChaseBehaviour extends TickerBehaviour {
 				if (success) {
 					movementsToTake.remove(0);
 				} else {
-					System.out.println("Agent " + agent.getName() + ": Something is wrong, path does not work");
+					System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
 
 					// Path does not work, so a new path should be calculated
 					movementsToTake = null;
@@ -102,7 +122,7 @@ public class ChaseBehaviour extends TickerBehaviour {
 			}
 
 			// Every move has been made, get new path
-			if (movementsToTake.isEmpty())
+			if (movementsToTake != null && movementsToTake.isEmpty())
 				movementsToTake = null;
 		}
 	}

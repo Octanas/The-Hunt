@@ -30,6 +30,7 @@ public class Maze {
 		int yCoordinate;
 		public boolean isHunter;
 		private boolean caught;
+		private boolean alert;
 
 		public MazeEntity(boolean isHunter, int xCoordinate, int yCoordinate, Direction direction) {
 			this.isHunter = isHunter;
@@ -37,6 +38,7 @@ public class Maze {
 			this.yCoordinate = yCoordinate;
 			this.direction = direction;
 			this.caught = false;
+			this.alert = false;
 		}
 
 		public Direction getDirection() {
@@ -62,11 +64,22 @@ public class Maze {
 
 			this.caught = caught;
 
+			if (this.caught)
+				this.alert = false;
+
 			return true;
 		}
 
 		public boolean isCaught() {
 			return !isHunter && caught;
+		}
+
+		public void setAlert(boolean alert) {
+			this.alert = alert;
+		}
+
+		public boolean isAlert() {
+			return alert;
 		}
 
 		public MazeEntity clone() {
@@ -552,9 +565,11 @@ public class Maze {
 	}
 
 	/**
-	 * Convertes a list of vertices (defining a path) to the list of movements necessary to take that path
-	 * @param path	List of vertices
-	 * @return		List of movements
+	 * Convertes a list of vertices (defining a path) to the list of movements
+	 * necessary to take that path
+	 * 
+	 * @param path List of vertices
+	 * @return List of movements
 	 */
 	public static List<Movement> convertVertexPathToMovements(List<Vertex> path) {
 		ArrayList<Movement> movements = new ArrayList<Movement>();
@@ -567,9 +582,9 @@ public class Maze {
 				movements.add(Movement.Up);
 			} else if (point.xCoordinate == nextPoint.xCoordinate && point.yCoordinate + 1 == nextPoint.yCoordinate) {
 				movements.add(Movement.Down);
-			} else if(point.xCoordinate - 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
+			} else if (point.xCoordinate - 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
 				movements.add(Movement.Left);
-			} else if(point.xCoordinate + 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
+			} else if (point.xCoordinate + 1 == nextPoint.xCoordinate && point.yCoordinate == nextPoint.yCoordinate) {
 				movements.add(Movement.Right);
 			} else {
 				return null;

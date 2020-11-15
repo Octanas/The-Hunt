@@ -7,7 +7,9 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class Observer extends SuperAgent {
 
-    protected void setup() {
+	private static final long serialVersionUID = -3028740105116828299L;
+
+	protected void setup() {
         super.setup();
 
         // Registration with the DF
