@@ -40,7 +40,7 @@ public class GoToBehaviour extends TickerBehaviour {
             i++;
         }
 
-        switch (i) {
+        switch (i % 4) {
             case 0:
                 agent.setBiasX(4);
                 agent.setBiasY(4);

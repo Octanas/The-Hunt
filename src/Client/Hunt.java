@@ -19,14 +19,28 @@ public class Hunt {
 
 		int numHunters = 4;
 		int numPrey = 1;
+		boolean fixedPrey = false;
 
-		if(args.length >= 1) {
+		if (args.length >= 1) {
 			try {
 				numHunters = Integer.parseInt(args[0]);
-			} catch(NumberFormatException ex) {
+			} catch (NumberFormatException ex) {
 				System.out.println("Invalid number of hunters, terminating");
 				return;
 			}
+		}
+
+		if (args.length >= 2) {
+			try {
+				numPrey = Integer.parseInt(args[1]);
+			} catch (NumberFormatException ex) {
+				System.out.println("Invalid number of preys, terminating");
+				return;
+			}
+		}
+
+		if (args.length >= 3) {
+			fixedPrey = Boolean.parseBoolean(args[2]);
 		}
 
 		// Start JADE
@@ -42,10 +56,11 @@ public class Hunt {
 		// Add agents
 		AgentContainer mainContainer = runt.createMainContainer(profile);
 
-		System.out.println("Starting with " + numHunters + (numHunters == 1 ? " hunter and " : " hunters and ") + numPrey + " prey");
+		System.out.println("Starting with " + numHunters + (numHunters == 1 ? " hunter and " : " hunters and ")
+				+ numPrey + " prey");
 
 		addPredators(mainContainer, numHunters);
-		addPreys(mainContainer, numPrey);
+		addPreys(mainContainer, numPrey, fixedPrey);
 		addObserver(mainContainer);
 
 		System.out.println("Agents created...");
@@ -81,13 +96,13 @@ public class Hunt {
 
 	}
 
-	public static void addPreys(AgentContainer container, int n) {
+	public static void addPreys(AgentContainer container, int n, boolean fixedPrey) {
 
 		AgentController preyController;
 
 		for (int i = 0; i < n; i++) {
 			try {
-				preyController = container.createNewAgent("Prey " + i, "Agents.Prey", new Object[] { maze });
+				preyController = container.createNewAgent("Prey " + i, "Agents.Prey", new Object[] { maze, fixedPrey });
 				preyController.start();
 			} catch (StaleProxyException e) {
 				e.printStackTrace();
@@ -96,18 +111,18 @@ public class Hunt {
 		}
 
 	}
-	
+
 	public static void addObserver(AgentContainer container) {
-		
+
 		AgentController observerController;
-		
+
 		try {
 			observerController = container.createNewAgent("Observer", "Agents.Observer", null);
 			observerController.start();
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }
