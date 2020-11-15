@@ -9,8 +9,6 @@ import Environment.Maze;
 import Environment.Maze.Movement;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.lang.acl.ACLMessage;
 
 public class PatrolBehaviour extends TickerBehaviour {
 

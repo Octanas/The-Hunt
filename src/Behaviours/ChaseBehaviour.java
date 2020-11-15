@@ -8,8 +8,6 @@ import Environment.Maze;
 import Environment.Vertex;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.lang.acl.ACLMessage;
 
 public class ChaseBehaviour extends TickerBehaviour {
 

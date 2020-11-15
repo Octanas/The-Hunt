@@ -9,8 +9,6 @@ import Environment.Maze;
 import Environment.Vertex;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.lang.acl.ACLMessage;
 
 public class GoToBehaviour extends TickerBehaviour {
 
@@ -105,8 +103,7 @@ public class GoToBehaviour extends TickerBehaviour {
                 if (success) {
                     movementsToTake.remove(0);
                 } else {
-                    System.out
-                            .println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
+                    System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
 
                     // Path does not work, so a new path should be calculated
                     movementsToTake = null;
