@@ -64,14 +64,6 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						}
 
 						break;
-
-					case "Patrol":
-						for (int i = 1; i < messageArray.length; i++) {
-							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
-						}
-						agent.removeCurrentBehaviour();
-						agent.setCurrentBehaviour(agent.getGoToBehaviour());
-						break;
 					default:
 						break;
 				}
@@ -97,7 +89,7 @@ public class ListenerBehaviour extends CyclicBehaviour {
 							}
 
 							for (int i = 0; i < predators.length; i++) {
-								agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, patrolMessage);
+								agent.sendMessageTo(predators[i].getName(), ACLMessage.ACCEPT_PROPOSAL, patrolMessage);
 							}
 						}
 						break;
@@ -106,6 +98,17 @@ public class ListenerBehaviour extends CyclicBehaviour {
 				}
 				break;
 			case ACLMessage.ACCEPT_PROPOSAL:
+				switch (messageArray[0]) {
+					case "Patrol":
+						for (int i = 1; i < messageArray.length; i++) {
+							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
+						}
+						agent.removeCurrentBehaviour();
+						agent.setCurrentBehaviour(agent.getGoToBehaviour());
+						break;
+					default:
+						break;
+				}
 				break;
 			case ACLMessage.REJECT_PROPOSAL:
 				switch (messageArray[0]) {
@@ -120,6 +123,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						String newMessage = "Roll " + String.valueOf(agent.getRolledValue());
 
 						agent.sendMessageTo(message.getSender(), ACLMessage.PROPOSE, newMessage);
+						break;
+					default:
 						break;
 				}
 				break;
