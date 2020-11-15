@@ -50,10 +50,33 @@ public class ListenerBehaviour extends CyclicBehaviour {
 		switch (type) {
 			case ACLMessage.INFORM:
 				switch (messageArray[0]) {
+					case "Prey":
+						agent.setPreyX(Integer.parseInt(messageArray[1]));
+						agent.setPreyY(Integer.parseInt(messageArray[2]));
 
+						if (!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
+							agent.removeCurrentBehaviour();
+							agent.setCurrentBehaviour(agent.getChaseBehaviour());
+						}
+
+						break;
+
+					case "Patrol":
+						for (int i = 1; i < messageArray.length; i++) {
+							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
+						}
+						agent.removeCurrentBehaviour();
+						agent.setCurrentBehaviour(agent.getGoToBehaviour());
+						break;
+					default:
+						break;
+				}
+				break;
+			case ACLMessage.PROPOSE:
+				switch (messageArray[0]) {
 					case "Roll":
 						if (agent.getAgentRolls().contains(Integer.parseInt(messageArray[1]))) {
-							agent.sendMessageTo(message.getSender(), ACLMessage.INFORM, "Reroll");
+							agent.sendMessageTo(message.getSender(), ACLMessage.REJECT_PROPOSAL, "Reroll");
 						} else {
 							agent.addAgentRoll(Integer.parseInt(messageArray[1]));
 						}
@@ -74,16 +97,14 @@ public class ListenerBehaviour extends CyclicBehaviour {
 							}
 						}
 						break;
-					case "Prey":
-						agent.setPreyX(Integer.parseInt(messageArray[1]));
-						agent.setPreyY(Integer.parseInt(messageArray[2]));
-
-						if (!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
-							agent.removeCurrentBehaviour();
-							agent.setCurrentBehaviour(agent.getChaseBehaviour());
-						}
-
+					default:
 						break;
+				}
+				break;
+			case ACLMessage.ACCEPT_PROPOSAL:
+				break;
+			case ACLMessage.REJECT_PROPOSAL:
+				switch (messageArray[0]) {
 					case "Reroll":
 						// Roll a new random value
 						Random rand = new Random();
@@ -94,24 +115,9 @@ public class ListenerBehaviour extends CyclicBehaviour {
 						// Send info to other Predators
 						String newMessage = "Roll " + String.valueOf(agent.getRolledValue());
 
-						agent.sendMessageTo(message.getSender(), ACLMessage.INFORM, newMessage);
-						break;
-					case "Patrol":
-						for (int i = 1; i < messageArray.length; i++) {
-							agent.addAgentRoll(Integer.parseInt(messageArray[i]));
-						}
-						agent.removeCurrentBehaviour();
-						agent.setCurrentBehaviour(agent.getGoToBehaviour());
-						break;
-					default:
+						agent.sendMessageTo(message.getSender(), ACLMessage.PROPOSE, newMessage);
 						break;
 				}
-				break;
-			case ACLMessage.PROPOSE:
-				break;
-			case ACLMessage.ACCEPT_PROPOSAL:
-				break;
-			case ACLMessage.REJECT_PROPOSAL:
 				break;
 			default:
 				break;
