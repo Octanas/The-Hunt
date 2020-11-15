@@ -84,11 +84,22 @@ public class PreyMovement extends TickerBehaviour {
 				while (!maze.moveEntity(agent.getName(), possibleMovements.get(i)) && i != possibleMovements.size())
 					i++;
 
+				// If not all ticks are at 0, the prey is in alert
+				boolean inAlert = false;
+
 				// Decrease a tick from each movement (the ones at 0 stay at 0)
 				for (Maze.Movement movement : agent.getMovementsToAvoid().keySet()) {
-					agent.getMovementsToAvoid().put(movement,
-							Math.max(0, agent.getMovementsToAvoid().get(movement) - 1));
+					int currTick = agent.getMovementsToAvoid().get(movement);
+
+					if (currTick != 0) {
+						agent.getMovementsToAvoid().put(movement, agent.getMovementsToAvoid().get(movement) - 1);
+
+						inAlert = true;
+					}
 				}
+
+				// Toggle alert for entity
+				self.setAlert(inAlert);
 			} else {
 				stop(); // Ticker Behaviour will stop repeating
 			}

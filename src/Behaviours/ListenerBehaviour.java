@@ -29,8 +29,14 @@ public class ListenerBehaviour extends CyclicBehaviour {
 			analyseMessage(message);
 		}
 
-		if(agent.getMaze() != null && agent.getMaze().isOver())
+		if (agent.getMaze() != null && agent.getMaze().isOver()) {
 			agent.removeCurrentBehaviour();
+
+			// Take entity off alert
+			if (agent.getMaze() != null && agent.getMaze().getEntities().get(agent.getName()) != null)
+				agent.getMaze().getEntities().get(agent.getName()).setAlert(false);
+		}
+
 	}
 
 	private void analyseMessage(ACLMessage message) {
@@ -71,8 +77,8 @@ public class ListenerBehaviour extends CyclicBehaviour {
 					case "Prey":
 						agent.setPreyX(Integer.parseInt(messageArray[1]));
 						agent.setPreyY(Integer.parseInt(messageArray[2]));
-						
-						if(!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
+
+						if (!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
 							agent.removeCurrentBehaviour();
 							agent.setCurrentBehaviour(agent.getChaseBehaviour());
 						}

@@ -74,6 +74,9 @@ public class SightBehaviour extends TickerBehaviour {
                     } else if (direction.equals(Maze.Direction.West)) {
                         thisAgent.getMovementsToAvoid().put(Maze.Movement.Left, thisAgent.getTicksToAvoid());
                     }
+
+                    // Put entity on alert
+                    self.setAlert(true);
                 }
             }
         }

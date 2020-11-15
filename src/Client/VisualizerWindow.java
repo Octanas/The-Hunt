@@ -25,7 +25,7 @@ import Environment.Maze.Tile;
 public class VisualizerWindow extends JPanel {
 
 	private static final long serialVersionUID = -3642023895537170950L;
-	
+
 	final int frameRate = 30;
 	final int animationFrames = 10;
 
@@ -50,6 +50,8 @@ public class VisualizerWindow extends JPanel {
 	Shape entityShape = new Ellipse2D.Double(0, 0, tileLength, tileLength);
 	Shape eliminatedShape = new Polygon(new int[] { 0, 5, 20, 35, 40, 25, 40, 35, 20, 5, 0, 15 },
 			new int[] { 35, 40, 25, 40, 35, 20, 5, 0, 15, 0, 5, 20 }, 12);
+	Shape alertShape1 = new Polygon(new int[] { 5, 6, 7, 5, 3, 4 }, new int[] { 15, 14, 3, 1, 3, 14 }, 6);
+	Shape alertShape2 = new Ellipse2D.Double(3, 17, 4, 4);
 
 	// Center in 0, 0
 	Shape directionIndicator = new Polygon(new int[] { -8, 8, 0 }, new int[] { -12, -12, -18 }, 3);
@@ -217,6 +219,23 @@ public class VisualizerWindow extends JPanel {
 
 				g2d.translate(currentXTranslation, currentYTranslation);
 				g2d.fill(eliminatedShape);
+
+				g2d.setTransform(saveTransform);
+				g2d.setTransform(identity);
+			}
+
+			// Draw alert marker
+			if (entity.isAlert()) {
+				g2d.setColor(Color.RED);
+
+				g2d.translate(currentXTranslation, currentYTranslation);
+
+				if (entity.getDirection().equals(Direction.West)) {
+					g2d.translate(2 * tileLength / 3, 0);
+				}
+
+				g2d.fill(alertShape1);
+				g2d.fill(alertShape2);
 
 				g2d.setTransform(saveTransform);
 				g2d.setTransform(identity);
