@@ -38,6 +38,7 @@ public class Predator extends SuperAgent {
 		// Adding initial behaviours
 		setCurrentBehaviour(getStartBehaviour());
 		addBehaviour(getListenerBehaviour());
+		addBehaviour(getSightBehaviour());
 	}
 
 }

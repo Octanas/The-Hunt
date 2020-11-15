@@ -86,24 +86,5 @@ public class PatrolBehaviour extends TickerBehaviour {
 				maze.moveEntity(agent.getName(), Movement.Down);
 			}
 		}
-
-		// Verify is prey is in vision
-		Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
-		// If yes send info to other hunters
-		if (visibleEntity != null && !visibleEntity.isHunter && !visibleEntity.isCaught()) {
-
-			DFAgentDescription[] predators = agent.getPredators();
-			String message = "Prey " + String.valueOf(visibleEntity.getXCoordinate()) + " "
-					+ String.valueOf(visibleEntity.getYCoordinate());
-
-			for (int i = 0; i < predators.length; i++) {
-				agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
-			}
-			agent.setPreyX(visibleEntity.getXCoordinate());
-			agent.setPreyY(visibleEntity.getYCoordinate());
-
-			agent.removeCurrentBehaviour();
-			agent.setCurrentBehaviour(agent.getChaseBehaviour());
-		}
 	}
 }

@@ -6,6 +6,7 @@ import Behaviours.ChaseBehaviour;
 import Behaviours.GoToBehaviour;
 import Behaviours.ListenerBehaviour;
 import Behaviours.PatrolBehaviour;
+import Behaviours.SightBehaviour;
 import Behaviours.StartBehaviour;
 import Environment.Maze;
 import jade.core.*;
@@ -94,12 +95,20 @@ public class SuperAgent extends Agent {
 
 	// Getters
 
+	public Behaviour getCurrentBehaviour() {
+		return currentBehaviour;
+	}
+
 	public Behaviour getStartBehaviour() {
 		return new StartBehaviour(this);
 	}
 
 	public Behaviour getListenerBehaviour() {
 		return new ListenerBehaviour(this);
+	}
+
+	public Behaviour getSightBehaviour() {
+		return new SightBehaviour(this, 100, true);
 	}
 
 	public Behaviour getGoToBehaviour() {
@@ -146,7 +155,6 @@ public class SuperAgent extends Agent {
 
 	public void removeCurrentBehaviour() {
 		if (currentBehaviour instanceof TickerBehaviour) {
-			System.out.println(this.getName());
 			((TickerBehaviour) currentBehaviour).stop();
 		}
 
@@ -157,7 +165,12 @@ public class SuperAgent extends Agent {
 	}
 
 	public void setCurrentBehaviour(Behaviour behaviour) {
+		if(currentBehaviour != null) {
+			removeCurrentBehaviour();
+		}
+
 		currentBehaviour = behaviour;
+
 		this.addBehaviour(behaviour);
 	}
 

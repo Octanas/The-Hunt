@@ -71,8 +71,12 @@ public class ListenerBehaviour extends CyclicBehaviour {
 					case "Prey":
 						agent.setPreyX(Integer.parseInt(messageArray[1]));
 						agent.setPreyY(Integer.parseInt(messageArray[2]));
-						agent.removeCurrentBehaviour();
-						agent.setCurrentBehaviour(agent.getChaseBehaviour());
+						
+						if(!(agent.getCurrentBehaviour() instanceof ChaseBehaviour)) {
+							agent.removeCurrentBehaviour();
+							agent.setCurrentBehaviour(agent.getChaseBehaviour());
+						}
+
 						break;
 					case "Reroll":
 						// Roll a new random value

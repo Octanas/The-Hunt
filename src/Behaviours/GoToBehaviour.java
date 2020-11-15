@@ -71,71 +71,52 @@ public class GoToBehaviour extends TickerBehaviour {
         Maze maze = agent.getMaze();
         Maze.MazeEntity self = maze.getEntities().get(agent.getName());
 
-        // Verify is prey is in vision
-        Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
-        // If yes send info to other hunters
-        if (visibleEntity != null && !visibleEntity.isHunter && !visibleEntity.isCaught()) {
+        // movementsToTake is null, so it's should get new path to follow
+        if (movementsToTake == null) {
+            Vertex init = new Vertex(self.getXCoordinate(), self.getYCoordinate());
+            Vertex prey = new Vertex(agent.getBiasX(), agent.getBiasY());
 
-            DFAgentDescription[] predators = agent.getPredators();
-            String message = "Prey " + String.valueOf(visibleEntity.getXCoordinate()) + " "
-                    + String.valueOf(visibleEntity.getYCoordinate());
+            Astar astar = new Astar(maze.getGraph(), init, prey);
+            int proc = astar.process();
 
-            for (int i = 0; i < predators.length; i++) {
-                agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
+            if (proc == 0) {
+                List<Vertex> path = astar.getPath();
+
+                movementsToTake = Maze.convertVertexPathToMovements(path);
+            } else {
+                if (proc == 1) {
+                    System.out.println("Unreachable Vertex...");
+                } else if (proc == 2) {
+                    System.out.println("Error...");
+                }
+
+                movementsToTake = null;
             }
-            agent.setPreyX(visibleEntity.getXCoordinate());
-            agent.setPreyY(visibleEntity.getYCoordinate());
 
-            agent.removeCurrentBehaviour();
-            agent.setCurrentBehaviour(agent.getChaseBehaviour());
-        } else {
-            // movementsToTake is null, so it's should get new path to follow
             if (movementsToTake == null) {
-                Vertex init = new Vertex(self.getXCoordinate(), self.getYCoordinate());
-                Vertex prey = new Vertex(agent.getBiasX(), agent.getBiasY());
+                System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path is invalid");
+            }
+        }
 
-                Astar astar = new Astar(maze.getGraph(), init, prey);
-                int proc = astar.process();
+        if (movementsToTake != null) {
+            if (!movementsToTake.isEmpty()) {
+                boolean success = maze.moveEntity(agent.getName(), movementsToTake.get(0));
 
-                if (proc == 0) {
-                    List<Vertex> path = astar.getPath();
-
-                    movementsToTake = Maze.convertVertexPathToMovements(path);
+                if (success) {
+                    movementsToTake.remove(0);
                 } else {
-                    if (proc == 1) {
-                        System.out.println("Unreachable Vertex...");
-                    } else if (proc == 2) {
-                        System.out.println("Error...");
-                    }
+                    System.out
+                            .println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
 
+                    // Path does not work, so a new path should be calculated
                     movementsToTake = null;
                 }
-
-                if (movementsToTake == null) {
-                    System.out.println("Agent " + agent.getLocalName() + ": Something is wrong, path is invalid");
-                }
             }
 
-            if (movementsToTake != null) {
-                if (!movementsToTake.isEmpty()) {
-                    boolean success = maze.moveEntity(agent.getName(), movementsToTake.get(0));
-
-                    if (success) {
-                        movementsToTake.remove(0);
-                    } else {
-                        System.out
-                                .println("Agent " + agent.getLocalName() + ": Something is wrong, path does not work");
-
-                        // Path does not work, so a new path should be calculated
-                        movementsToTake = null;
-                    }
-                }
-
-                // Every move has been made, start patrolling
-                if (movementsToTake != null && movementsToTake.isEmpty()) {
-                    agent.removeCurrentBehaviour();
-                    agent.setCurrentBehaviour(agent.getPatrolBehaviour());
-                }
+            // Every move has been made, start patrolling
+            if (movementsToTake != null && movementsToTake.isEmpty()) {
+                agent.removeCurrentBehaviour();
+                agent.setCurrentBehaviour(agent.getPatrolBehaviour());
             }
         }
     }

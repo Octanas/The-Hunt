@@ -46,22 +46,6 @@ public class ChaseBehaviour extends TickerBehaviour {
 		Maze maze = agent.getMaze();
 		Maze.MazeEntity self = maze.getEntities().get(agent.getName());
 
-		// Verify is prey is in vision
-		Maze.MazeEntity visibleEntity = maze.getVisibleEntity(agent.getName());
-		// If yes send info to other hunters
-		if (visibleEntity != null && !visibleEntity.isHunter && !visibleEntity.isCaught()) {
-
-			DFAgentDescription[] predators = agent.getPredators();
-			String message = "Prey " + String.valueOf(visibleEntity.getXCoordinate()) + " "
-					+ String.valueOf(visibleEntity.getYCoordinate());
-
-			for (int i = 0; i < predators.length; i++) {
-				agent.sendMessageTo(predators[i].getName(), ACLMessage.INFORM, message);
-			}
-			agent.setPreyX(visibleEntity.getXCoordinate());
-			agent.setPreyY(visibleEntity.getYCoordinate());
-		}
-
 		// New position for prey was communicated, so get a new path
 		if (previousPreyX != agent.getPreyX() || previousPreyY != agent.getPreyY()) {
 			movementsToTake = null;
